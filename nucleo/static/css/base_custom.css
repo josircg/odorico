@@ -1,0 +1,17 @@
+#header{
+    display: none;
+}
+
+.linha{
+    display: block;
+}
+
+.col{
+    width: 700px;
+    float: left;
+}
+
+input#mes, input#ano, input#buscar, select#mes{
+    display: inline-block;
+    margin-right: 10px;
+}

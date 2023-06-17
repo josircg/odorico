@@ -1,0 +1,250 @@
+{% extends 'base_site.html' %}
+{% load static humanize %}
+{% block title %}Periódicos{% endblock %}
+{% block extrastyle %}
+     {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/tingle.min.css' %}">
+
+    <style>
+        th.sortable {
+            padding: 0!important;
+        }
+        .align-right {
+            text-align: right;
+        }
+        h1 {
+            margin: 0 !important;
+        }
+        .icon-button {
+            margin-top: 3px;
+            margin-left: 8px;
+            cursor: pointer;
+            transition: all .2s;
+        }
+        .icon-button:hover {
+            transform: scale(1.2);
+        }
+        .cabecalho {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="content-main">
+        <div class="cabecalho">
+            <h1>Listagem de Periódicos</h1>
+            <a class="icon-button" onclick="showModal()"><img src="/media/info.png" height="20" ></a>
+        </div>
+        <div class="module tabela" id="changelist">
+            <div class="results">
+                    <div class="changelist-filter">
+                         <form action="/periodicos/" method="GET" id="form_issn" style="display: inline-block">
+                            <label style="display: inline-block;">
+                                ISSN
+                                <br>
+                                <input required type="text" name="issn_search" id="issn_search" value="{{ result.search_issn }}">
+
+                            </label>
+                            <label style="display: inline-block; margin-right: 5px">
+                                <button type="submit" style="background-color: transparent;outline: none;appearance: none;border: none;cursor: pointer;border-right: 1px solid #d7d4d4;margin-right: 5px">
+                                    <i class="far fa-search" style="font-size: 20px"></i>
+                                </button>
+                            </label>
+                         </form>
+                         <form action="/periodicos/" method="GET" id="form_area" style="display: inline-block; position: relative; margin-bottom: 10px;">
+
+                            <label style="display: inline-block">
+                                Área CNPQ
+                                <br>
+                                <select class="filter" name="area" id="area_id">
+                                    <option value="0" selected="selected">
+                                        Todos
+                                    </option>
+                                    {% for area in result.area %}
+                                        <option value="{{ area.id }}" {% if area.id == result.area_select %} selected="selected" {% endif %}>
+                                            {{ area.nome }}
+                                        </option>
+                                     {% endfor %}
+                                </select>
+                            </label>
+                            <label style="display: inline-block; margin-left: 10px">
+                                Área ASJC / CrossRef
+                                <br>
+                                <select class="filter" name="assunto" id="assunto_id">
+                                    <option value="0" selected="selected">
+                                        Todos
+                                    </option>
+                                    {% for assunto in result.assuntos %}
+                                        <option value="{{ assunto.id }}" {% if assunto.id == result.assunto_select %} selected="selected" {% endif %}>
+                                            {{ assunto.descricao }}
+                                        </option>
+                                     {% endfor %}
+                                </select>
+                            </label>
+                         </form>
+                        <form method="get" id="form_search" style="display: inline-block;">
+                            <label style="display: inline-block; margin-left: 10px">
+                                Nome do Periódico
+                                <br>
+                                <input type="text" name="revista_search" id="revista_search" style="width: 450px" value="{{ result.search_revista }}" />
+                                <div style="position: absolute; margin-bottom: 10px">
+                                    <input id="diamound_check" style="display: inline" type="checkbox" name="diamound_check" {% if result.diamound_check %} checked {% endif %} />
+                                    <label style="display: inline" for="diamound_check">Diamond (Acesso Livre)</label>
+                                </div>
+                            </label>
+                            <label style="display: inline-block;">
+                                <button type="submit" style="background-color: transparent;outline: none;appearance: none;border: none;cursor: pointer;">
+                                    <i class="far fa-search" style="font-size: 20px"></i>
+                                </button>
+                            </label>
+                        </form>
+                    </div>
+
+                    <table id="result_list" style="margin-top: 15px;">
+                        <thead>
+                            <tr>
+                                {% for label in result.labels %}
+                                    <th scope="col" class="sortable column-nome">
+                                        <div class="text ">
+                                            {% if result.params %}
+                                                <a href="{{result.params}}&ordering=-{{label.value}}">{{label.label}}</a>
+                                            {% else %}
+                                                <a href="?ordering=-{{label.value}}">{{label.label}}</a>
+                                            {% endif %}
+                                        </div>
+                                    <div class="clear"></div>
+                                    </th>
+                                 {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for value in result.values %}
+                                <tr class="{% cycle 'row1' 'row2' %}">
+                                    {% if value.status == 'F' %}
+                                        <th>{{ value.nome }} <b>(INATIVO)</b></th>
+                                    {% else %}
+                                        <th><a target="_blank" href="{% if value.url %}{{ value.url }}{% else %}https://portal.issn.org/resource/ISSN/{{ value.issn }}{% endif %}">{{ value.nome }}</a></th>
+                                    {% endif %}
+                                   <td>{{ value.issn }}</td>
+                                   <td>{{ value.qualis }}</td>
+                                   {% if value.eissn %}
+                                       <td>{{ value.eissn }}</td>
+                                   {% else %}
+                                       <td>-</td>
+                                   {% endif %}
+                                    {% if value.modelo_economico == 'D' %}
+                                        <td>
+                                            <img height="20px" src="/media/diamond.png" alt="diamond">
+                                        </td>
+                                    {% elif value.modelo_economico == 'T' %}
+                                        <td>
+                                            <img height="20px" src="/media/cadeado.png" alt="trancado">
+                                        </td>
+                                    {% elif value.modelo_economico == 'A' %}
+                                        <td>
+                                            <img height="20px" src="/media/coin.png" alt="APC">
+                                        </td>
+                                    {% elif value.modelo_economico == 'P' %}
+                                        <td>
+                                            <img height="20px" src="/media/badred.png" alt="predatório">
+                                        </td>
+                                    {% else %}
+                                        <td></td>
+                                    {% endif %}
+                                    {% if value.h5 %}
+                                        <td class="align-right"><a target="_blank" href="https://scholar.google.com/citations?hl=pt-BR&vq=en&view_op=list_hcore&venue={{ value.google_code }}">{{ value.h5|floatformat:1|intcomma }}</a></td>
+                                    {% else %}
+                                        <td>-</td>
+                                    {% endif %}
+
+                                    {% if value.citescore %}<td class="align-right"><a href="https://www.scopus.com/sourceid/{{ value.scopus_code }}">{{ value.citescore }}</a></td>{% else %}<td> - </td>{% endif %}
+                                    {% if value.sjr %}<td class="align-right">{{ value.sjr|floatformat:4|intcomma }}</td>{% else %}<td> - </td> {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                 <form action="/periodicos/" method="GET" id="form_area">
+                     <p class="paginator">{{ result.soma }} Periódicos</p>
+                        <fieldset class="module">
+                            <h2>Contato</h2>
+                            <div class="submit">
+                            <p>Esta base foi construída a partir de diversas fontes de dados e está em constante atualização</p><br>
+                            <p>Se você sentiu falta de algum periódico, informe o ISSN que a gente inclui!</p><br>
+                            <p>Se você é editor e quiser atualizar algum dado do seu periódico, entre em contato</p><br>
+                            <p>Inclua também o seu email para que possamos te responder</p><br>
+                            <label for="issn" class="label-issn">ISSN:</label>
+                            <input type="text" name="issn" id="issn">
+                            <label for="email" class="label-issn">Email:</label>
+                            <input type="email" name="email" id="email">
+                            <input type="submit" value="Enviar" />
+                        </div>
+                        </fieldset>
+                 </form>
+                    <p class="paginator" style="text-align: right">Obra do Odorico</p>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
+    <script src="{% static 'js/tingle.min.js' %}"></script>
+    <script>
+        /*document.getElementById('area').onchange = function (event) {
+            if (event.target.value >= 0){
+                 document.getElementById('form_area').submit();
+            }
+        }*/
+        {#$('#issn').mask('AAAA-AAAA');#}
+        $('#assunto_id').change(e => {
+            $('#area_id').val(null);
+            $('#form_area').submit();
+        });
+        $('#area_id').change(e => {
+            $('#assunto_id').val(null);
+            $('#form_area').submit();
+        });
+
+        {#$('#issn_search').mask('AAAA-AAAA');#}
+    </script>
+    <script>
+        // instanciate new modal
+        var modal = new tingle.modal({
+            footer: true,
+            stickyFooter: false,
+            closeMethods: ['overlay', 'button', 'escape'],
+            closeLabel: "Close",
+            cssClass: ['custom-class-1', 'custom-class-2'],
+            onOpen: function() {
+                console.log('modal open');
+            },
+            onClose: function() {
+                console.log('modal closed');
+            },
+            beforeClose: function() {
+                // here's goes some logic
+                // e.g. save content before closing the modal
+                return true; // close the modal
+                return false; // nothing happens
+            }
+        });
+
+        // set content
+        modal.setContent(
+            '<h1>Sobre a listagem de Periódicos</h1><p>Esta listagem é fruto de 5 anos de trabalho de coleta e validação de ISSNs de diversas bases de dados</p>' +
+            '<p>Contém os dados agregados da Scopus (2021), QUALIS (2017-2020), Google Scholar (2020) e Diamond Journals</p>'+
+            '<p>Algumas dicas:</p>' +
+            '<ul><li>É possível fazer a busca diretamente pelo ISSN, pela área de conhecimento utilizada pelo Citescore ou pelo nome do periódico</li>' +
+            '<li>O filtro por Área CNPQ é uma categorização feita por nós e por isso ainda contém apenas as nossas áreas de interesse</li>' +
+            '<li>É possível ordenar os periódicos pelo H5 ou pelo Citescore, clicando no título da coluna</li>' +
+            '<li>Modelos Econômicos: <img width="30" height="30" src="/media/diamond.png"> são os que seguramente são de acesso aberto. <img width="30" height="30" src="/media/cadeado.png"> são pagos e <img width="30" height="30" src="/media/coin.png"> cobram APC</li>'+
+            '</ul><br>');
+        function showModal() {
+            modal.open();
+        }
+        function closeModal() {
+            modal.close();
+        }
+
+    </script>
+{% endblock %}

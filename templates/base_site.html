@@ -1,0 +1,15 @@
+{% extends "admin:admin/base_site.html" %}
+{% load static %}
+
+{% block extrastyle %}
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}"/>
+{% endblock %}
+
+{% block nav-global %}
+    {{ block.super }}
+{% endblock %}
+
+{% block branding %}
+  <h1 id="site-name"><a href="{% url 'home' %}">Odorico</a></h1>
+{% endblock %}

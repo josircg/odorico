@@ -1,0 +1,246 @@
+#header #user-tools {
+    margin-top: -8px;
+}
+
+#header #navigation-menu {
+    margin-top: 3px;
+}
+
+#header ul#navigation-menu li.first a {
+    min-height: 15px;
+}
+
+.breadcrumbs {
+    display: none !important;
+}
+
+#content {
+    padding-top: 15px !important;
+}
+
+.messagelist {
+    margin-top: 35px !important;
+}
+
+.login #container {
+    min-width: 560px !important;
+}
+
+.inline-group .tabular td.original p, .change-related, .add-related, .delete-related, .inline_label, .inline-related h3 b {
+    display: none !important;
+}
+
+.inline-group .tabular tr.has_original td {
+    padding-top: 8px !important;
+}
+
+.form-row {
+    overflow: hidden;
+    padding: 10px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--hairline-color);
+}
+
+.form-row a:link, .form-row a:visited {
+    text-decoration: underline;
+}
+
+.inline-group td, th {
+    padding: 2px 4px 1px 4px;
+}
+/*
+input, textarea, select, .form-row p, form .button {
+    display: block;
+}
+*/
+
+/*input[type='file'] {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}*/
+p {
+    margin-top: 30px;
+}
+
+#result_list {
+    position: relative;
+    width: 100%;
+}
+
+#area {
+    margin-bottom: 10px;
+}
+
+#issn {
+    margin: 10px 0 10px;
+}
+
+.submit {
+    padding: 12px 14px;
+    background-color: #f8f8f8;
+    border: 1px solid #eee;
+}
+
+.submit p {
+    margin: 0;
+    padding: 0;
+}
+
+label.label-issn {
+    margin-top: 20px;
+}
+
+.messagelist {
+    margin-top: 0px !important;
+}
+
+.dataset {
+    overflow: hidden;
+    padding: 10px;
+    font-size: 13px;
+    border-bottom: 1px solid #eee;
+}
+
+.aligned label {
+    width: 200px !important;
+}
+
+.col {
+    float: left;
+}
+
+label {
+    font-weight: normal;
+    color: #666;
+    font-size: 13px;
+}
+
+.paginator {
+    font-size: 13px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    line-height: 22px;
+    margin: 0;
+    border-top: 1px solid #ddd;
+}
+
+.paginator a:link, .paginator a:visited {
+    padding: 2px 6px;
+    background: var(--button-bg);
+    text-decoration: none;
+    color: var(--button-fg);
+}
+
+input[type=email] {
+    width: 480px;
+}
+
+th {
+    padding-top: 7px !important;
+}
+
+.submit-row {
+    padding: 12px 14px;
+    margin: 0 0 20px;
+    background: #f8f8f8;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    text-align: left;
+    overflow: hidden;
+}
+
+.submit-row a.buttonlink, .submit-row a.buttonlink-success {
+    display: block;
+    border-radius: 4px;
+    padding: 10px 15px;
+    height: auto;
+    line-height: 15px;
+    color: #fff;
+    text-decoration: none;
+    margin: 0px 5px;
+}
+
+.submit-row a.buttonlink {
+    background: var(--button-hover-bg);
+}
+
+.submit-row a.buttonlink-success {
+    background: green;
+}
+
+.submit-row input {
+    display: inline;
+}
+
+.aligned p.file-upload {
+    margin: 30px 0px 0px;
+}
+
+/* django select2 input */
+.django-select2{
+    width: 480px;
+}
+
+/* Readonly inputs */
+input[readonly]:not([type="button"]):not([type="submit"]):not([type="file"]), select[readonly],
+.vLargeTextField[readonly] {
+  background: #eeeeee;
+}
+
+/*Select2 readonly start*/
+select[readonly].select2-hidden-accessible + .select2-container {
+    pointer-events: none;
+    touch-action: none;
+}
+
+select[readonly].select2-hidden-accessible + .select2-container .select2-selection {
+    background: #eee;
+    box-shadow: none;
+}
+
+select[readonly].select2-hidden-accessible + .select2-container .select2-selection__arrow, select[readonly].select2-hidden-accessible + .select2-container .select2-selection__clear {
+    display: none;
+}
+
+/* crispy-forms admin like */
+.requiredField {
+    font-weight: bold;
+    color: var(--body-fg);
+}
+
+.text-muted {
+    font-size: 11px;
+    color: var(--body-quiet-color);
+    display: flex;
+}
+
+.invalid-feedback {
+    color: var(--error-fg);
+    background: var(--body-bg);
+    display: flex;
+}
+
+.alert-danger ul {
+    margin: 0 0 4px;
+    padding: 0;
+    color: var(--error-fg);
+    background: var(--body-bg);
+}
+
+div.alert-danger ul {
+    margin: 0 0 4px;
+    padding: 0;
+    color: var(--error-fg);
+    background: var(--body-bg);
+}
+
+div.alert-danger li {
+    font-size: 13px;
+    display: block;
+    margin-bottom: 4px;
+    overflow-wrap: break-word;
+}
+
+div.alert-danger li:first-child {
+    margin-top: 0;
+}

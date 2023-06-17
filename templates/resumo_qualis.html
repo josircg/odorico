@@ -1,0 +1,77 @@
+{% extends 'base_site.html' %}
+{% block title %}{{ result.titulo }}{% endblock %}
+{% block extrahead %}
+    <script>
+        function submit() {
+            form = document.getElementById('form-obj');
+            form.submit();
+        }
+    </script>
+
+{% endblock %}
+{% block content %}
+    <div class="content-main">
+    <h1>{{ result.titulo }}</h1>
+    <ul class="object-tools">
+        <form method="POST" id="form-obj">
+            {% csrf_token %}
+            <li><a onclick="submit();" href="#">Gerar CSV</a></li>
+            <li><a href="#">Gerar PDF</a></li>
+        </form>
+
+    </ul>
+        <div class="module tabela" id="changelist">
+            <div class="results">
+                    <table id="result_list">
+                        <thead>
+                            <tr>
+                                {% for label in result.labels %}
+                                    <th scope="col" class="column-nome" style="{{ label.style }}">
+                                        <div class="text">{{label.value}}</div>
+                                        <div class="clear"></div>
+                                    </th>
+                                 {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for value in result.values %}
+                                <tr class="{% cycle 'row1' 'row2' %}">
+                                    <td>{{ value.Pesquisador }}</td>
+                                    <td>{% if value.A1 > 0 %}<b>{{ value.A1 }}</b>{% else %}{{ value.A1 }}{% endif %}</td>
+                                    <td>{% if value.A2 > 0 %}<b>{{ value.A2 }}</b>{% else %}{{ value.A2 }}{% endif %}</td>
+                                    <td>{% if value.A3 > 0 %}<b>{{ value.A3 }}</b>{% else %}{{ value.A3 }}{% endif %}</td>
+                                    <td>{% if value.A4 > 0 %}<b>{{ value.A4 }}</b>{% else %}{{ value.A4 }}{% endif %}</td>
+                                    <td>{% if value.B1 > 0 %}<b>{{ value.B1 }}</b>{% else %}{{ value.B1 }}{% endif %}</td>
+                                    <td>{% if value.B2 > 0 %}<b>{{ value.B2 }}</b>{% else %}{{ value.B2 }}{% endif %}</td>
+                                    <td>{% if value.B3 > 0 %}<b>{{ value.B3 }}</b>{% else %}{{ value.B3 }}{% endif %}</td>
+                                    <td>{% if value.B4 > 0 %}<b>{{ value.B4 }}</b>{% else %}{{ value.B4 }}{% endif %}</td>
+                                    <td>{% if value.C > 0 %}<b>{{ value.C }}</b>{% else %}{{ value.C }}{% endif %}</td>
+                                    <td>{% if value.ND > 0 %}<b>{{ value.ND }}</b>{% else %}{{ value.ND }}{% endif %}</td>
+                                    <td>{% if value.NC > 0 %}<b>{{ value.NC }}</b>{% else %}{{ value.NC }}{% endif %}</td>
+                                    <td>{% if value.TOTAL > 0 %}<b>{{ value.TOTAL }}</b>{% else %}{{ value.TOTAL }}{% endif %}</td>
+                                </tr>
+                            {% endfor %}
+                            {% for value in result.totalizadores %}
+                                  <tr>
+                                    <td>Total de Professores: <b>{{ value.TOTAL_PESQUISADORES }}</b></td>
+                                      <td><b>{{ value.A1 }}</b></td>
+                                      <td><b>{{ value.A2 }}</b></td>
+                                      <td><b>{{ value.A3 }}</b></td>
+                                      <td><b>{{ value.A4 }}</b></td>
+                                      <td><b>{{ value.B1 }}</b></td>
+                                      <td><b>{{ value.B2 }}</b></td>
+                                      <td><b>{{ value.B3 }}</b></td>
+                                      <td><b>{{ value.B4 }}</b></td>
+                                      <td><b>{{ value.C }}</b></td>
+                                      <td><b>{{ value.ND}}</b></td>
+                                      <td><b>{{ value.NC}}</b></td>
+                                      <td><b>{{ value.TOTAL}}</b></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                <p class="paginator" style="text-align: right">Obra do Odorico</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

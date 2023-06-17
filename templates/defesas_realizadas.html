@@ -1,0 +1,66 @@
+{% extends 'base_site_sem_header.html' %}
+{% load tags %}
+{% block title %}
+    Defesas Realizadas
+{% endblock %}
+{% block content %}
+    <div class="content-main">
+        <div>
+            <form action="/defesas_realizadas/" method="GET">
+                <div class="changelist-filter">
+                    <label for="mes">Mês:</label>
+                    <select name="mes" id="mes">
+                    </select>
+                    <label for="ano">Ano:</label>
+                    <input type="text" name="ano" id="ano" required value="{% if request.GET.ano %}{{ request.GET.ano}}{% else %}0{% endif %}">
+                    <input type="submit" value="Buscar" id="buscar">
+                </div>
+            </form>
+            <fieldset class="module aligned">
+            {% if result.valores %}
+                {% for valor in result.valores %}
+                    <div class="dataset">
+                        <div class="linha">
+                            {% for k in result.keys %}
+                                <label>{{ k }}</label>
+                                <div class="col">{{ valor|get_item:k }}</div>
+                                <div class="clear"></div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+             {% else %}
+                <p>Nenhum registro encontrado.</p>
+            {% endif %}
+            </fieldset>
+        </div>
+    </div>
+    <p style="text-align: right"><small>Confabulado por Odorico</small></p>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
+    <script>
+        $('#ano').mask('0000');
+        $('#ano').width('90');
+
+        window.onload = function () {
+              var ano = document.getElementById('ano');
+              if (ano.value === '0'){
+                  ano.value = new Date().getFullYear();
+              }
+
+              var x = document.getElementById("mes");
+
+              for(var i = 1 ; i <= 12; i++){
+                  var mes = {% if request.GET.mes %}{{ request.GET.mes }}{% else %}1{% endif %};
+                  var option = document.createElement("option");
+                  if (mes === i) {
+                      option.setAttribute('selected', '');
+                  }
+                  option.text = `${i}` ;
+                  option.value = `${i}` ;
+                  x.add(option, x[i]);
+              }
+        }
+
+    </script>
+{% endblock %}

@@ -1,0 +1,20 @@
+.aligned label{
+    width: auto !important;
+    float: none !important;
+}
+.aligned label + p, .aligned label + div.help, .aligned label + div.readonly {
+    margin-left: 0!important;
+}
+fieldset .field-box {
+    min-width: 130px!important;
+}
+.form-row.field-projeto.field-sem_projeto.field-conta_sucupira {
+    display: flex;
+    align-items: center;
+}
+input#id_doi {
+    width: 474px!important;
+}
+input#id_isbn {
+    width: 137px!important;
+}

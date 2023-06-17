@@ -1,0 +1,81 @@
+{% load static admin_modify %}
+
+<div class="js-inline-admin-formset inline-group" id="{{ formset.prefix }}-group"
+     data-inline-type="tabular"
+     data-inline-formset="{{ inline_instance.inline_formset_data }}">
+  <div class="tabular inline-related">
+
+    {{ formset.management_form }}
+
+    <fieldset class="module">
+      {% if formset.max_num == 1 %}
+        <h2>{{ inline_instance.verbose_name|capfirst }}</h2>
+      {% else %}
+        <h2>{{ inline_instance.verbose_name_plural|capfirst }}</h2>
+      {% endif %}
+
+      {{ formset.non_form_errors }}
+
+      <table>
+           <thead>
+             <tr>
+               <th class="original"></th>
+               {% for field in formset.empty_form %}
+                 {% if field.label and not field.is_hidden %}
+                   <th class="column-{{ field.name }}{% if field.required %} required{% endif %}">{{ field.label|capfirst }}
+                   {% if field.help_text %}<img src="{% static "admin/img/icon-unknown.svg" %}" class="help help-tooltip" width="10" height="10" alt="({{ field.help_text|striptags }})" title="{{ field.help_text|striptags }}">{% endif %}
+                   </th>
+                 {% endif %}
+               {% endfor %}
+             </tr>
+           </thead>
+
+           <tbody>
+             {% for inline_form in formset %}
+               {% if inline_form.non_field_errors %}
+                <tr class="row-form-errors"><td colspan="{{ inline_form|cell_count }}">{{ inline_form.non_field_errors }}</td></tr>
+               {% endif %}
+
+                <tr class="form-row {% if not inline_form.empty_permitted %}has_original{% endif %}"
+                    id="{{ formset.prefix }}-{{ forloop.counter0 }}">
+                  <td class="original">
+                    {% for field in inline_form.hidden_fields %}
+                      {{ field }}
+                    {% endfor %}
+                  </td>
+
+                  {% for field in inline_form.visible_fields %}
+                    <td class="{% if field.name %}field-{{ field.name }}{% endif %} {% if field.name == 'DELETE' and inline_form.empty_permitted %}delete{% endif %}">
+                      {% if field.name == 'DELETE' %}
+                        {% if formset.can_delete and not inline_form.empty_permitted %}
+                          {{ field }}
+                        {% endif %}
+                      {% else %}
+                        {{ field.errors.as_ul }}
+                        {{ field }}
+                      {% endif %}
+                    </td>
+                  {% endfor %}
+                </tr>
+             {% endfor %}
+
+             <tr class="form-row empty-form" id="{{ formset.prefix }}-empty">
+               <td class="original">
+                 {% for field in formset.empty_form.hidden_fields %}
+                   {{ field }}
+                  {% endfor %}
+               </td>
+
+              {% for field in formset.empty_form.visible_fields %}
+                <td class="{% if field.name %}field-{{ field.name }}{% endif %} {% if field.name == 'DELETE' %}delete{% endif %}">
+                  {% if field.name != 'DELETE' %}
+                    {{ field }}
+                  {% endif %}
+                </td>
+              {% endfor %}
+             </tr>
+           </tbody>
+         </table>
+    </fieldset>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+{% extends 'base_site.html' %}
+
+{% block title %}Novo Projeto de Pesquisa | Odorico{% endblock %}
+
+{% block content %}
+    <h1>Novo projeto de pesquisa - {{ result.professor.get }}</h1>
+    <div class="content-main">
+        <div class="module tabela" id="changelist">
+            <div class="results">
+                <form action="/novo_projeto/{{result.id_lattes}}" method="POST" id="target">
+                    {% csrf_token %}
+                    <fildset class="module aligned">
+                        <div class="form-row">
+                            <label class="" for="id_projetos" style="display: inline-block">Título do Projeto:</label>
+                            <input type="text" name="titulo"  style="display: inline-block; width: 500px">
+                        </div>
+                    </fildset>
+                    <div class="submit-row" style="margin-top: 20px">
+                        <input type="submit" value="Adicionar" class="default" style="display: inline-block; float: left; margin-right: 10px">
+                    </div>
+                </form>
+                <p class="paginator" style="text-align: right">Obra do Odorico</p>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
+    <style>
+        .form-row{
+            border-bottom: 1px solid #eee !important;
+            padding: 10px;
+        }
+    .submit-row {
+        padding: 12px 14px;
+        margin: 0 0 20px;
+        background: #f8f8f8;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        text-align: right;
+        overflow: hidden;
+    }
+    </style>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'base_site.html' %}
+
+{% block title %}{{ result.titulo }}{% endblock %}
+
+{% block content %}
+    <h1>{{ result.titulo }}</h1>
+    <div class="content-main">
+        <div class="module tabela" id="changelist">
+            <div class="results">
+                <form action="/producao_edit/{{result.producao.id}}" method="POST" id="target">
+                    {% csrf_token %}
+                    <fildset class="module aligned">
+                        <div class="form-row">
+                            <label class="" for="id_projetos" style="display: inline-block">Projeto:</label>
+                            <select name="projeto" id="id_projetos" class="filter" style="display:inline-block; width: 750px">
+                               {% for projeto in result.projetos %}
+                                       <option value="{{ projeto.projeto.id }}" {% if result.projeto_select == projeto.projeto.id %} selected="selected" {% endif %}>{{ projeto.projeto.nome }}</option>
+                               {% endfor %}
+                            </select>
+                            <input id="sem-projeto" {% if result.producao.sem_projeto %}checked{% endif %} type="checkbox" style="display: inline-block; margin-left: 10px"/>
+                            <label for="sem-projeto" style="display: inline">Produção externa ao programa.</label>
+                            <input type="hidden" name="sem_projeto" id="sem-projeto-text"/>
+                        </div>
+                        <div class="form-row">
+                            <label for="id_tipo" style="display: inline-block">Tipo:</label>
+                            <span style="font-size: 13px">{{ result.producao.tipo }}</span>
+                        </div>
+                        <div class="form-row">
+                            <div class="linha" style="position: relative; height: 60px">
+                                <div class="col" style="">
+                                    <label for="id_tipo">Título:</label>
+                                </div>
+                                <div class="col" style="position: absolute; left: 120px">
+                                      <span>{{ result.producao.titulo|slice:'310'}}</span>
+                                </div>
+                                <div class="clear" style="clear: both"></div>
+                            </div>
+                        </div>
+
+                    </fildset>
+                    <div class="submit-row" style="margin-top: 20px">
+                        <input type="submit" value="Gravar" class="default" style="display: inline-block; float: left; margin-right: 10px">
+                        <a href="/producao_projeto/{{ result.lattes }}" class="default"><input type="button" value="Voltar" style="display: inline-block; margin-right: 10px; float: left"></a>
+                        <a href="/novo_projeto/{{ result.lattes }}?redirect='producao_edit/{{ result.producao.id }}'"><input type="button" value="Inserir Projeto" style="float: left; margin-right: 10px"/></a>
+
+                    </div>
+                </form>
+                <p class="paginator" style="text-align: left">Ao "Gravar", o sistema já indica a próxima produção que você deve associar.</p>
+                <p class="paginator" style="text-align: left">Clique em "Inserir Projeto" caso o seu projeto não apareça nas opções de seleção.</p>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
+    <script>
+        $(document).ready(function () {
+            if($('#sem-projeto').is(':checked')){
+                    $('#id_projetos').attr('disabled', true)
+                    $("#sem-projeto-text").attr('value', 'True')
+                }else{
+                    $('#id_projetos').attr('disabled', false)
+                    $("#sem-projeto-text").attr('value', 'False')
+                }
+            $('#sem-projeto').change(function () {
+                if($(this).is(':checked')){
+                    $('#id_projetos').attr('disabled', true)
+                    $("#sem-projeto-text").attr('value', 'True')
+                }else{
+                    $('#id_projetos').attr('disabled', false)
+                    $("#sem-projeto-text").attr('value', 'False')
+                }
+                {#console.log()#}
+            })
+
+
+        })
+    </script>
+{% endblock %}

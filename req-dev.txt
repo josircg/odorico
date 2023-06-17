@@ -1,0 +1,4 @@
+# Utilizado apenas em ambiente de desenvolvimento
+-r requirements.txt
+fabric==2.7.0
+model_bakery==1.10.1

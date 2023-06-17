@@ -1,0 +1,38 @@
+{% extends 'base_site.html' %}
+{% block title %}{{ result.titulo }}{% endblock %}
+{% block content %}
+    <div class="content-main">
+    <h1>{{ result.titulo }}</h1>
+        <div class="module tabela" id="changelist">
+            <div class="results">
+                    <table id="result_list">
+                        <thead>
+                            <tr>
+                                {% for label in result.labels %}
+                                    <th scope="col" class="column-nome" style="{{ label.style }}">
+                                        <div class="text">{{label.value}}</div>
+                                        <div class="clear"></div>
+                                    </th>
+                                 {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for value in result.values %}
+                                <tr class="{% cycle 'row1' 'row2' %}">
+                                    <td>{{ value.titulo }}</td>
+                                    {% if not value.projeto %}
+                                          <td><a href="/producao_edit/{{ value.id }}">Associar Projeto</a></td>
+                                    {% else %}
+                                        <td><a href="/producao_edit/{{ value.id }}">{{ value.projeto }}</a></td>
+                                    {% endif %}
+
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                <p class="paginator">Total de Produções: {{ result.total }}</p>
+                <p class="paginator" style="text-align: right">Obra do Odorico</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

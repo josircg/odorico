@@ -1,0 +1,62 @@
+{% extends 'base_site.html' %}
+{% load static i18n %}
+{% load crispy_forms_tags %}
+
+{% block extrastyle %}
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}">
+  {{ block.super }}
+  <link href="{% static 'admin/css/vendor/select2/select2.min.css' %}" type="text/css" media="screen" rel="stylesheet">
+  <link href="{% static 'static/django_select2/django_select2.css' %}" type="text/css" media="screen" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+  {% if errors %}
+    <div>
+      <p class="errornote">
+      {% if errors|length == 1 %}{% translate "Please correct the error below." %}{% else %}{% translate "Please correct the errors below." %}{% endif %}
+      </p>
+    </div>
+  {% endif %}
+
+  <form action="" method="post" enctype="multipart/form-data" id="{{ form.opts.model_name }}_form">
+    {% block form %}
+      {% csrf_token %}
+
+      {% crispy form %}
+
+      {% for formset, inline_instance in inlines %}
+        {% include inline_instance.template %}
+      {% endfor %}
+
+      {% if form.submit_helper %}
+        {% crispy form form.submit_helper %}
+      {% endif %}
+    {% endblock form %}
+  </form>
+
+{% endblock %}
+
+{% block footer %}
+  {{ block.super }}
+  <script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'admin/js/vendor/select2/select2.full.min.js' %}"></script>
+  <script src="{% static 'django_select2/django_select2.js' %}"></script>
+  <script src="{% static 'admin/js/jquery.init.js' %}"></script>
+  <script src="{% static 'admin/js/core.js' %}"></script>
+  <script src="{% static 'admin/js/inlines.js' %}"></script>
+  <script id="django-admin-form-add-constants"
+          src="{% static 'admin/js/change_form.js' %}"
+            {% if add %}
+              data-model-name="{{ form.opts.model_name }}"
+            {% endif %}
+          async=""></script>
+  <script>
+    django.jQuery(document).on('formset:added', function (event, $row, formsetName) {
+        // inicializa os combos de um inline criado dinamicamente
+        django.jQuery($row).find(".django-select2").djangoSelect2('destroy');
+        django.jQuery($row).find(".select2-container").remove();
+        django.jQuery($row).find('.django-select2').djangoSelect2();
+    });
+  </script>
+{% endblock %}

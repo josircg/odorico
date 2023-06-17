@@ -1,0 +1,66 @@
+{% extends 'base_site.html' %}
+{% load static %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% static "admin/css/changelists.css" %}">
+{% endblock %}
+
+{% block content %}
+
+  <div id="content-main">
+    <div id="changelist-form">
+      <div class="form-row">
+        <div class="submit-row">
+          {% for acao in acoes %}
+            <div class="col">
+              <a href="{{ acao.endereco }}" class="{% if acao.tag %}buttonlink-success{% else %}buttonlink{% endif %}">{{ acao.nome }}</a>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="changelist-form-container">
+        <div class="module" id="changelist">
+          <div class="results">
+
+            <table id="result_list">
+                <thead>
+                    <tr>
+                      <th scope="col">
+                        <div class="text">Título</div>
+                      </th>
+                      <th scope="col">
+                        <div class="text">Tipo de Produção</div>
+                      </th>
+                      <th scope="col">
+                        <div class="text">Ação</div>
+                      </th>
+                    </tr>
+                </thead>
+                <tbody>
+                  {% for producao in page_obj %}
+                    <tr class="{% cycle 'row1' 'row2' %}">
+                      <td>{{ producao.titulo }}</td>
+                      <td>{{ producao.tipo }}</td>
+                      <td>
+                        <div class="text">
+                          <a href="{% url 'editar_producao' hash producao.pk %}{% if apr %}?apr=1{% endif %}"
+                             class="{% if apr %}viewlink{% else %}changelink{% endif %}">
+                            <span class="icon">{% if apr %}Visualisar{% else %}Editar{% endif %}</span>
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+            </table>
+
+            {% include 'partials/pagination.html' %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base_site.html" %}
+
+{% block title %}Importação de Área de Conhecimento{% endblock %}
+
+{% block content %}
+
+<p>Selecione o arquivo de importação no formato CSV com os seguintes campos: <b>CD_AREA_AVALIACAO, NM_AREA_AVALIACAO, NM_GRANDE_AREA_CONHECIMENTO, NM_AREA_CONHECIMENTO</b></p>
+<p>Todos os campos são requeridos para a importação possa ser realizada</p>
+<form action="/importacao_area/" enctype="multipart/form-data" method="post">
+    {% csrf_token %}
+    {{ form.arquivo }}
+    <input type="submit" value="Importar" />
+</form>
+{% endblock %}

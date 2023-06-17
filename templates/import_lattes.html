@@ -1,0 +1,13 @@
+{% extends "base_form.html" %}
+
+{% block title %}Importação Lattes{% endblock %}
+
+{% block content %}
+  {% if aluno %}
+  <p>Envie um arquivo ZIP ou um arquivo XML do Currículo Lattes de seu computador e clique no botão Importar</p>
+  <p><btn><a href="https://www.youtube.com/watch?v=E_B-NEc3b30" target="_blank">Assista aqui como obter o arquivo com o seu currículo na plataforma Lattes</a></btn></p>
+  {% else %}
+  <p>Envie um arquivo ZIP contendo um ou mais XMLs, ou um arquivo XML do Currículo de seu computador e clique no botão Importar</p>
+  {% endif %}
+  {{ block.super }}
+{% endblock %}

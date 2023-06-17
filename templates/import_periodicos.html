@@ -1,0 +1,14 @@
+{% extends "base_site.html" %}
+
+{% block title %}Importação de Periódicos{% endblock %}
+
+{% block content %}
+
+<p>Selecione o arquivo de importação no formato CSV com os seguintes campos na mesma ordem: <b>ISSN, nome, qualis, URL, sistema, area</b></p>
+    <p>Os campo <b>URL e sistema</b> são opcionais. O campo <b>Área</b> está reconhecendo os textos <b>CI, COM e MUSEOLOGIA</b> para atribuir as áreas corretas</p>
+<form action="/importacao_periodicos/" enctype="multipart/form-data" method="post">
+    {% csrf_token %}
+    {{ form.arquivo }}
+    <input type="submit" value="Importar" />
+</form>
+{% endblock %}

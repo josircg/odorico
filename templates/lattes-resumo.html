@@ -1,0 +1,197 @@
+{% extends 'base_site.html' %}
+{% load static %}
+{% block title %}Resumo Lattes{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/jqcloud.css' %}">
+    <style>
+        h2 {
+            margin-top: 20px!important;
+
+        }
+        h1 {
+            margin-bottom: 0;
+            margin-right: 20px;
+        }
+        .nuvem {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .object-tools {
+            margin-top: 0;
+        }
+        /* Ajustes na cor das palavras da nuvem */
+
+        .jqcloud-word.w1 {
+          color: #5ca0cb;
+          font-size: 130%;
+        }
+        .jqcloud-word.w2 {
+          color: #1b69a1;
+          font-size: 160%;
+        }
+        .jqcloud-word.w3 {
+          color: #90c5f0;
+          font-size: 200%;
+        }
+        .jqcloud-word.w4 {
+          color: #90c5f0;
+          font-size: 250%;
+        }
+        .jqcloud-word.w5 {
+          color: #abb5f0;
+          font-size: 300%;
+        }
+        .jqcloud-word.w6 {
+          color: #778be5;
+          font-size: 350%;
+        }
+        .jqcloud-word.w7 {
+          color: #417630;
+          font-size: 400%;
+        }
+        .jqcloud-word.w8 {
+          color: #417670;
+          font-size: 450%;
+        }
+        .jqcloud-word.w9 {
+          color: #417690;
+          font-size: 500%;
+        }
+        .jqcloud-word.w10 {
+          color: #283884;
+          font-size: 550%;
+        }
+    </style>
+
+{% endblock %}
+{% block content %}
+    <ul class="object-tools">
+        {% if not processado %}
+            <li><a href="">Como baixar o arquivo que contém os seus dados no Lattes</a></li>
+        {% else %}
+            <li><a href="/lattes-resumo/{{ identificador }}/?download=csv">Download CSV</a></li>
+        {% endif %}
+    </ul>
+    <div class="content-main">
+        {% if not processado %}<h1 style="margin-bottom: 20px">Resumo Lattes</h1>{% endif %}
+        <div class="module tabela" id="changelist">
+
+            {% if not processado %}
+                <form action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.xml.label_tag }}: {{ form.xml }}
+                    {% if form.captcha.errors %}
+                        {{ form.captcha.label_tag }}
+                        {{ form.captcha.errors }}
+                    {% endif %}
+                    {{ form.captcha }}
+                    <button style="padding: 8px 20px; margin-top: 25px" type="submit" class="button">Enviar</button>
+                </form>
+
+            {% else %}
+                <div class="pesquisador">
+                    <h1>{{ pesquisador|safe }}</h1>
+                    <span class="help">Para compartilhar esse relatório, clique com o botão direito do mouse e selecione a opção "Copiar endereço do link."</span>
+                </div>
+                <div class="results">
+                    {% if dicas %}
+                        <h2>Dicas para o Preenchimento do Lattes</h2>
+                        <table id="result_list">
+                            <tbody>
+                                {% for dica in dicas %}
+                                    <tr class="{% cycle 'row1' 'row2' %}">
+                                        <td>{{ dica }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                    {% if areas_conhecimento %}
+                        <h2>Áreas do Conhecimento</h2>
+                         <table id="result_list">
+                            <tbody>
+                                {% for area in areas_conhecimento %}
+                                    <tr class="{% cycle 'row1' 'row2' %}">
+                                        <td>{{ area }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                    {% if artigos_publicados %}
+                        <h2>Artigos Publicados</h2>
+                         <table id="result_list">
+                            <tbody>
+                                {% for artigo in artigos_publicados %}
+                                    <tr class="{% cycle 'row1' 'row2' %}">
+                                        {% if artigo.doi %}
+                                            <td>{{ artigo.doi|safe }}</td>
+                                        {% else %}
+                                            <td>{{ artigo.descricao }}</td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                    {% if capitulos_publicados %}
+                        <h2>Capítulos Publicados</h2>
+                         <table id="result_list">
+                            <tbody>
+                                {% for capitulo in capitulos_publicados %}
+                                    <tr class="{% cycle 'row1' 'row2' %}">
+                                        <td>{{ capitulo }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                    {% if eventos %}
+                        <h2>Eventos</h2>
+                         <table id="result_list">
+                            <tbody>
+                                {% for evento in eventos %}
+                                    <tr class="{% cycle 'row1' 'row2' %}">
+                                        <td>{{ evento }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                    {% if producao_tecnica %}
+                        <h2>Produções Técnicas</h2>
+                         <table id="result_list">
+                            <tbody>
+                                {% for producao in producao_tecnica %}
+                                    <tr class="{% cycle 'row1' 'row2' %}">
+                                        <td>{{ producao }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                    {% if nuvem %}
+                        <h2>Nuvem de Palavras</h2>
+                        <div class="nuvem">
+                            <div id="keywords"></div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="{% static 'js/jqcloud.js' %}"></script>
+    <script>
+        var words = [
+            {% for tag, weight in nuvem %}
+                { text: '{{ tag }}', weight: {{ weight }}, link: ''},
+            {% endfor %}
+        ];
+            $('#keywords').jQCloud(words, {width: 550, height: 330});
+    </script>
+
+{% endblock %}

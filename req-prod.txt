@@ -1,0 +1,3 @@
+# Utilizado apenas em ambiente de produção
+-r requirements.txt
+gunicorn

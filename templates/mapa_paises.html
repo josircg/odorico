@@ -1,0 +1,36 @@
+{% extends 'base_site.html' %}
+{% block extrastyle %}
+    {{ block.super }}
+    <style type="text/css">
+        #map {
+            position: relative;
+            height: 550px;
+        }
+    </style>
+{% endblock %}
+{% block title %}Produção Internacional {{ result.titulo }}{% endblock %}
+{% block content %}
+    <div class="content-main">
+        <h1>Produção Internacional {{ result.titulo }}</h1>
+         <ul class="object-tools">
+            <li><a href="/mapa_csv/?id={{ result.id }}">Gerar CSV</a></li>
+        </ul>
+        <div id="map"></div>
+        <script>
+        function initMap() {
+            var image = 'http://maps.google.com/mapfiles/kml/pal2/icon23.png';
+
+            var map = new google.maps.Map(document.getElementById('map'), {
+              zoom: 2,
+              center: new google.maps.LatLng(0,0),
+            });
+            {% for mark in result.marker %}
+                var marker = new google.maps.Marker({ position: {lat: {{ mark.lat }}, lng: {{ mark.lng }}}, map: map, icon: image, title: '{{mark.pais}}: {{ mark.qtd }}' });
+            {% endfor %}
+        }
+        </script>
+        <script async defer
+                src="https://maps.googleapis.com/maps/api/js?key={{ result.api_key }}&callback=initMap">
+        </script>
+    </div>
+{% endblock %}

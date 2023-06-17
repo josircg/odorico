@@ -1,0 +1,50 @@
+{% extends 'base_site_sem_header.html' %}
+{% block title %}Agenda Defesa{% endblock %}
+{% block content %}
+    <div class="content-main">
+        <div>
+            <fieldset class="module aligned">
+            {% for reg in result.valores %}
+                <div class="dataset">
+                    <div class="linha">
+                        <label>Título:</label>
+                        <div class="col">{{ reg.titulo }}</div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="linha">
+                        <label>Aluno:</label>
+                        <div class="col">{{ reg.aluno }}</div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="linha">
+                        <label>Tipo:</label>
+                        <div class="col">{{ reg.tipo }}</div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="linha">
+                        <label>Orientador(a):</label>
+                        <div class="col">{{ reg.orientador }}</div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="linha">
+                        <label>Data:</label>
+                        <div class="col">{{ reg.data }}</div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="linha">
+                        <label>Local:</label>
+                        <div class="col">{{ reg.local }}</div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            {% endfor %}
+            </fieldset>
+        </div>
+    </div>
+    <div class="footer" style="width: 100%">
+        <p style="float: right; margin: 0"><small>Confabulado por Odorico&nbsp;&nbsp;</small></p>
+        <a href="/defesas_realizadas"><input type="button" style="float: left; padding: 0 !important; height: 30px; width: 120px; font-size: 10px; text-align: center;" class="default" value="Defesas realizadas"></a>
+    </div>
+
+
+{% endblock %}
