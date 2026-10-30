@@ -18,18 +18,24 @@ Outra opção é utilizar: mkvirtualenv odorico -p python3
 	mkdir logs
 
 ## 3. Clonar o repositório
-	git clone git@github.com:josircg/odorico.git odorico-git
-
-## 4. Entrar no repositório
+	git clone git@github.com:josircg/odorico.git
 	cd odorico
+
+## 4. Caso você já tenha um tema próprio, clone o repositório do tema (opcional)
+
+	git clone <repo tema> tema
 
 ## 5. Instalar as libs
 
 	pip install -r requirements.txt
 
-## 6. Preparar o Banco de Dados. A base default está em sqlite e é mais que suficiente para que você possa testar a ferramenta.
+## 6. Preparar o Banco de Dados. 
 
-## 7. Copie o local.py de configs/local.py para a pasta onde se encontra o settings.py e altere os parâmetros necessários, como nome do site, domínio, secret_key, senha do banco de dados e senha do repositório de arquivos
+    A base default está em sqlite e é mais que suficiente para que você possa testar a ferramenta.
+
+## 7. Copie o local.py de configs/local.py para a pasta onde se encontra o settings.py
+
+    Altere os parâmetros necessários, como nome do site, domínio, secret_key, senha do banco de dados e senha do repositório de arquivos
 
 ## 8. Teste se a configuração do local.py está ok:
 
@@ -46,11 +52,11 @@ Outra opção é utilizar: mkvirtualenv odorico -p python3
 	* Nos 2 arquivos, altere os parâmetros necessários para configurar o seu servidor.
 	* Instale também os pacotes específicos para produção: pip install -r req-prod.txt
 
-# 10. Cria o superuser
+## 10. Cria o superuser
 
 	python manage.py createsuperuser
 
-# 11. Para testar se o sistema está funcionando:
+## 11. Para testar se o sistema está funcionando:
 
 	python manage.py runserver
 
