@@ -18,7 +18,7 @@ Outra opção é utilizar: mkvirtualenv odorico -p python3
 	mkdir logs
 
 ## 3. Clonar o repositório
-	git clone git@git.redemoara.ibict.br:ibict/coepi/odorico.git
+	git clone git@github.com:josircg/odorico.git odorico-git
 
 ## 4. Entrar no repositório
 	cd odorico
@@ -50,12 +50,21 @@ Outra opção é utilizar: mkvirtualenv odorico -p python3
 
 	python manage.py createsuperuser
 
-# 11. Rode o servidor
+# 11. Para testar se o sistema está funcionando:
 
 	python manage.py runserver
 
-Geralmente, para uma nova instalação, faz-se uma carga de uma base de dados já existente para que se possa aproveitar a base Qualis/Periódicos.
-Nesse caso, é importante limpar a base atual através do script abaixo:
+Para uma nova base de dados, importe as tabelas de apoio.
+
+````
+python manage.py loaddata configs/fixtures/paises.json
+python manage.py loaddata configs/fixtures/qualis.json
+python manage.py loaddata configs/fixtures/tipo_ocorrencia.json
+python manage.py loaddata configs/fixtures/tipoprocessamento.json
+python manage.py loaddata configs/fixtures/area_impacto.json
+````
+
+Caso você já tenha uma base de dados populada com o Qualis/Periódicos, é importante limpar a base atual através do script abaixo:
 
 ````
 from nucleo.models import *
