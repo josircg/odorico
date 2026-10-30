@@ -13,14 +13,10 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name='pesquisador',
-            name='id_cnpq',
-            field=models.CharField(blank=True, max_length=16, null=True, unique=True, verbose_name='ID CNPQ'),
-        ),
-        migrations.AlterField(
             model_name='producao',
             name='periodico',
-            field=models.ForeignKey(blank=True, help_text='Preencha ao menos 5 caracteres ou o ISSN', null=True, on_delete=django.db.models.deletion.SET_NULL, to='qualis.periodico'),
+            field=models.ForeignKey(blank=True, help_text='Preencha ao menos 5 caracteres ou o ISSN', null=True,
+                                    on_delete=django.db.models.deletion.SET_NULL, to='qualis.periodico'),
         ),
         migrations.AlterUniqueTogether(
             name='pesquisadorprograma',

@@ -1,0 +1,6 @@
+{% extends 'base_form.html' %}
+
+{% block content %}
+  <h2>{{ tipo_producao }} ({{ tipo_producao.get_categoria_display  }})</h2>
+  {{ block.super }}
+{% endblock %}

@@ -1,39 +1,50 @@
-# coding:utf-8
 import datetime
 from django.conf import settings
 from django.template.loader import get_template
 
 from threading import Thread
 from .models import EmailAgendado
-from odorico import local
 
 
-def sendmail(subject='', to=[], params={}, template=''):
+def sendmail(subject, dest_list, params={}, template='', message=None, thread=True):
     """
-    Método para envio de e-mail:
+    Rotina para envio de e-mail:
     - subject: string contendo assunto do e-mail
     - to: lista dos e-mails dos destinatários
     - params: dicionário com os parâmetros para renderizar o e-mail
+    - message: texto da mensagem sem a necessidade de utilizar um template
     """
-    def send_thread_email(assunto='', to=[], params={}, template=''):
-
-        email = EmailAgendado.objects.create(
-            subject=assunto,
-            to=','.join(to)
-        )
-
+    def send_thread_email(assunto, dest_list, params={}, template='', message=None):
         try:
-            template_content = get_template(template)
-            html_content = template_content.render(params)
-            email.html = html_content
-        except Exception as e:
-            email.html = u'%s' % e
+            prefix = settings.EMAIL_PREFIX
+            email = EmailAgendado.objects.create(
+                subject=f'{prefix} {assunto}'[:89],
+                to=','.join(dest_list)
+            )
 
-        mail_active = getattr(local,'SEND_EMAIL', 'False')
-        if mail_active:
-            email.send()
-        else:
+            if message:
+                email.html = message
+            else:
+                if template:
+                    template_content = get_template(template)
+                    email.html = template_content.render(params)
+                else:
+                    email.html = 'Empty message'
+
+            mail_active = settings.SEND_EMAIL
+            if mail_active:
+                email.send()
+            else:
+                email.save()
+
+        except Exception as e:
+            email = EmailAgendado.objects.create(
+                subject='Erro enviando e-mail', to=settings.REPLY_TO_EMAIL, html=f'{assunto}\n{e}'
+            )
             email.save()
 
-    th = Thread(target=send_thread_email, args=(subject, to, params, template))
-    th.start()
+    if thread:
+        th = Thread(target=send_thread_email, args=(subject, dest_list, params, template, message))
+        th.start()
+    else:
+        send_thread_email(subject, dest_list, params, template, message)

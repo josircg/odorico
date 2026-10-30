@@ -1,0 +1,70 @@
+{% extends 'base_header.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content%}
+<div class="container py-4 py-xl-5">
+    <div class="card mx-auto shadow-sm p-4" style="max-width: 60rem;">
+        <h2 class="text-center mb-3">{{ titulo }}</h2>
+        {% block instrucoes %}
+        <p class="text-center text-muted">
+            Aqui estão os detalhes da solicitação de defesa submetida pela(o) discente. Analise as informações abaixo antes de aprovar ou solicitar ajustes.
+        </p>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if message.level == 25 %}alert-success{% elif message.level == 40 %}alert-danger{% else %}alert-warning{% endif %} text-center">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% endblock %}
+
+        <!-- Informações do Evento -->
+        <h5 class="mt-4">📋 Informações da Defesa</h5>
+        <ul class="list-group list-group-flush mb-3">
+            <li class="list-group-item"><strong>Discente:</strong> {{ matricula_evento.matricula.pesquisador|default:"-" }}</li>
+            <li class="list-group-item"><strong>Título do Trabalho:</strong> {{ matricula_evento.titulo_trabalho|default:"-" }}</li>
+            <li class="list-group-item"><strong>Data:</strong> {{ matricula_evento.dtevento|date:"d/m/Y" }}</li>
+            <li class="list-group-item"><strong>Horário:</strong> {{ matricula_evento.horario|time:"H:i"|default:"-" }}</li>
+            <li class="list-group-item"><strong>Local:</strong> {{ matricula_evento.local|default:"-" }}</li>
+            <li class="list-group-item"><strong>Modalidade:</strong> {{ matricula_evento.get_modalidade_display|default:"-" }}</li>
+            <li class="list-group-item"><strong>Justificativa (caso não presencial):</strong> {{ matricula_evento.justificativa|default:"-" }}</li>
+            <li class="list-group-item"><strong>Observações:</strong> {{ matricula_evento.obs|default:"-" }}</li>
+        </ul>
+
+        <!-- Membros da Banca -->
+        <h5 class="mt-4">👥 Membros da Banca</h5>
+        {% if membros_banca %}
+            <ul class="list-group list-group-flush mb-4">
+                {% for membro in membros_banca %}
+                    <li class="list-group-item">
+                        {{ membro.link_lattes }}
+                        {% if membro.ordem == 0 %}<span class="badge bg-primary">Orientador</span>{% endif %}
+                        {% if membro.ordem == 1 %}<span class="badge bg-primary">Coorientador</span>{% endif %}
+                        {% if membro.externo %}<span class="badge bg-secondary">Externo</span>{% endif %}
+                        {% if membro.suplente %}<span class="badge bg-warning text-dark">Suplente</span>{% endif %}
+                        <br/>{{ membro.pesquisador.instituicoes|default:"" }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">Nenhum membro da banca cadastrado.</p>
+        {% endif %}
+
+        {% block defense_actions %}
+          <!-- Botões de Ação -->
+          <form method="post" class="text-center mt-3">
+              {% csrf_token %}
+                {% block defense_actions_buttons %}
+                  <button type="submit" name="action" value="aprovar" class="btn btn-success">
+                      ✅ Aprovar
+                  </button>
+                  <button type="submit" name="action" value="ajustar" class="btn btn-danger ms-2">
+                      🛠️ Solicitar Ajustes
+                  </button>
+              {% endblock defense_actions_buttons %}
+          </form>
+        {% endblock defense_actions %}
+    </div>
+</div>
+{% endblock %}

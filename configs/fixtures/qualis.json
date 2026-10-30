@@ -1,0 +1,11 @@
+[
+  {"model": "qualis.schema",
+   "fields": {"descricao": "QUALIS 2026", "sigla": "QUALIS2026", "nota": "Qualis divulgado para o período 2021-2024", "ano_inicial": 2021, "ano_final": 2024}
+  },
+  {"model": "qualis.schema",
+   "fields": {"descricao": "Openalex 2024", "sigla": "OA2024", "nota": "Openalex h5 2024", "ano_inicial": 2024, "ano_final": 2024}
+  },
+  {"model": "qualis.schema",
+   "fields": {"descricao": "Openalex 2023", "sigla": "OA2023", "nota": "Openalex h5 2023", "ano_inicial": 2023, "ano_final": 2023}
+  }
+]

@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
 
 from nucleo.models import Pesquisador
-from chupalattes import obtem_dt_cnpq, url_cnpq
+from chupalattes import obtem_dt_cnpq, URL_CNPQ
 
 
 class Command(BaseCommand):
@@ -30,7 +30,7 @@ class Command(BaseCommand):
         for pesquisador in dset:
             tot_lidos += 1
             if pesquisador.id_cnpq:
-                dt_cnpq = obtem_dt_cnpq(url_cnpq % pesquisador.id_cnpq)
+                dt_cnpq = obtem_dt_cnpq(URL_CNPQ % pesquisador.id_cnpq)
                 if dt_cnpq and dt_cnpq > pesquisador.dtupdate:
                     pesquisador.atualizado = False
                     pesquisador.save()

@@ -1,14 +1,13 @@
 from django.core.management.base import BaseCommand
-from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
 
 from nucleo.models import Producao
-from chupalattes import obtem_dt_cnpq, url_cnpq, get_lista_paises, find_pais
+from chupalattes import get_lista_paises, find_pais
 
 
 class Command(BaseCommand):
-    label = 'Atualiza o status de atualização do Lattes via CNPQ'
+    label = 'Atualiza a descrição dos paises nas produções'
 
     def add_arguments(self, parser):
         parser.add_argument('id', type=int, help='Id da Produção', nargs='?', default=None)

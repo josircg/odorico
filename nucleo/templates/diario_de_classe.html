@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>Diário de Classe</title>
+  <style>
+    @page {
+      size: A4 landscape;
+      margin: 1cm 1cm 2.2cm 1cm; /* top right bottom left */
+      @bottom-center { content: element(rodape); }
+    }
+
+    body {
+      font-family: "DejaVu Sans", Arial, sans-serif;
+      font-size: 8pt;
+      color: #000;
+    }
+
+    /* Cabeçalho */
+    .cabecalho {
+      text-align: center;
+    }
+    .instituicao {
+      font-size: 11pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin: 0;
+    }
+    .titulo {
+      font-size: 12pt;
+      font-weight: 700;
+      margin: 4px 0 2px 0;
+    }
+    .disciplina {
+      font-size: 10pt;
+      margin: 0 0 10px 0;
+    }
+
+    /* Tabela de chamada */
+    table.pauta {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    table.pauta th,
+    table.pauta td {
+      border: 0.5pt solid #000;
+      padding: 2px 3px;
+      vertical-align: middle;
+      line-height: 1.2;
+      /* Deixa o texto quebrar em vez de truncar — nome completo sempre visível. */
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    /* Altura fixa de ~2 linhas: uniformiza as linhas, independentemente do
+       tamanho do nome/e-mail. */
+    table.pauta td {
+      height: 2.4em;
+    }
+    table.pauta th {
+      background: #e8e8e8;
+      text-align: center;
+      font-size: 7pt;
+    }
+    .col-seq   { width: 2%; text-align: center; padding-left: 1px; padding-right: 1px; }
+    .col-curso { width: 8%; }
+    .col-mat   { width: 8%; }
+    .col-nome  { width: 25%; }
+    .col-email { width: 18%; }
+    .col-pres  { text-align: center; }
+    /* E-mails são longos e sem espaços: permite quebrar em qualquer ponto. */
+    td.col-email { word-break: break-all; }
+
+    /* Rodapé (running element): assinatura */
+    #rodape {
+      position: running(rodape);
+      width: 100%;
+      text-align: center;
+      font-size: 9pt;
+    }
+    .linha-assinatura {
+      width: 100%;
+      margin: 24px auto 4px auto;
+      height: 0;
+      border-top: 1px solid #000;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cabecalho">
+    <div class="instituicao">{{ nome_instituicao }}</div>
+    <div class="titulo">Diário de Classe{% if docentes %} — {{ docentes }}{% endif %}</div>
+    <div class="disciplina">{{ disciplina }}</div>
+  </div>
+
+  <table class="pauta">
+    <thead>
+      <tr>
+        <th class="col-seq">Nº</th>
+        <th class="col-curso">Curso</th>
+        <th class="col-mat">Matrícula</th>
+        <th class="col-nome">Nome</th>
+        <th class="col-email">Email</th>
+        {% for n in colunas_presenca %}<th class="col-pres">{{ n }}</th>{% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for linha in linhas %}
+      <tr>
+        <td class="col-seq">{{ linha.seq }}</td>
+        <td class="col-curso">{{ linha.curso }}</td>
+        <td class="col-mat">{{ linha.numero }}</td>
+        <td class="col-nome">{{ linha.nome }}</td>
+        <td class="col-email">{{ linha.email }}</td>
+        {% for n in colunas_presenca %}<td class="col-pres"></td>{% endfor %}
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="{{ colunas_presenca|length|add:5 }}" style="text-align:center;">
+          Nenhum aluno inscrito nesta turma.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Rodapé fixo: assinatura -->
+  <div id="rodape">
+    <div class="linha-assinatura"></div>
+    <div>Assinatura do(a) Professor(a)</div>
+  </div>
+
+</body>
+</html>

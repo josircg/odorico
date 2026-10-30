@@ -1,15 +1,15 @@
-# -*- coding: utf-8 -*-
-
 from collections import Counter
+from bs4 import BeautifulSoup
 
-def remove_charlist(text, charlist, sep):
+
+def remove_charlist(text:str, charlist:list, sep:str) -> str:
     """
     Args:
         text (str): Texto
         charlist (list): Lista com strings a serem removidas.
         sep (char): new separator
     Returns:
-        str
+        texto sem as strings
     """
     result = ''
     for c in text:
@@ -32,7 +32,7 @@ def build_wordcloud(texto, keywords, stopwords=None):
     if stopwords is None:
         stopwords = []
 
-    texto = remove_charlist(texto, ['’', '”', '`', '"', '\t', '\r', '\''], ' ')
+    texto = remove_charlist(texto, ['’', '(', ')', '”', '`', '"', '\t', '\r', '\''], ' ')
 
     phrase_delimiters = [':', '.', ',', ';', '?', '!', '\n']
     words = make_phrases(texto, phrase_delimiters + [' '])
@@ -56,9 +56,11 @@ def build_wordcloud(texto, keywords, stopwords=None):
 
     cleaned = []
     for word in words:
-        if termo.upper() == termo and len(termo) < 8:
-            if termo.isdigit():
+        if word.upper() == word and len(word) < 8:
+            if word.isdigit():
                 termo = ''
+            else:
+                termo = word
         else:
             termo = word.lower()
 
@@ -71,7 +73,7 @@ def build_wordcloud(texto, keywords, stopwords=None):
         else:
             cleaned.append(termo.lower())
 
-    words_frequency = Computation.frequently(list_words=cleaned)
+    words_frequency = Computation.frequently(list_words=cleaned, quantity=50)
 
     return words_frequency
 
@@ -134,3 +136,26 @@ class Computation:
                             more_less.append(lw[0])
 
         return more_less
+
+
+def extrai_texto_de_html(string_html: str) -> str:
+    """
+    Recebe uma string contendo código HTML, usa BeautifulSoup para parsear o conteúdo,
+    e retorna o texto limpo, garantindo que os acentos sejam mantidos.
+
+    Parâmetros:
+    - string_html (str): A string contendo o código HTML.
+
+    Retorna:
+    - str: O texto extraído do HTML.
+    """
+    try:
+        soup = BeautifulSoup(string_html, 'html.parser')
+
+        # Extração de todo o texto visível.
+        texto_limpo = soup.get_text()
+
+        return texto_limpo
+
+    except Exception as e:
+        return f"Ocorreu um erro ao processar a string HTML: {e}"

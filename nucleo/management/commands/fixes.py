@@ -1,40 +1,127 @@
+import os
+
 from django.core.management.base import BaseCommand
-from django.db.models import Count, Exists, OuterRef
+from django.db import connection
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
-from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
 
+from nucleo.apps import obtem_dt_cnpq
 from nucleo.models import *
-from qualis.models import *
-from nucleo import clean_doi_url
-from nucleo.apps import generate_hash, normalize_name, parse_titulo
+
+
+# from nucleo import clean_doi_url
+# from nucleo.apps import generate_hash, normalize_name, parse_titulo
+
+
+# Corrige o atributo orientacao.matricula das orientações ativas
+def fix_orientacao_matricula():
+    count = 0
+    for orientacao in Orientacao.objects.filter(matricula__isnull=True).order_by('id'):
+        if orientacao.status == STATUS_ATIVO:
+            dataset = Matricula.objects.filter(pesquisador=orientacao.aluno).order_by('-ingresso')
+        else:
+            dataset = Matricula.objects.filter(pesquisador=orientacao.aluno).order_by('ingresso')
+        for matricula in dataset:
+            atual = Orientacao.objects.filter(aluno=orientacao.aluno, matricula=matricula, status='A').order_by('id')
+            if not atual:
+                orientacao.matricula = matricula
+                orientacao.save()
+                count += 1
+                break
+    print(f'Orientações Incluídas: {count}')
+    count = Orientacao.objects.filter(matricula__isnull=True).count()
+    if count > 0:
+        print(f'Ainda ficaram {count} orientações em aberto')
+
+
+def fix_matricula_atual():
+    count = 0
+    for aluno in Pesquisador.objects.filter(matricula__isnull=False):
+        aluno.matricula_atual = aluno.matricula_set.order_by('-ingresso').first()
+        aluno.save()
+        count += 1
+    print(f'Alunos atualizados: {count}')
+
+from escola.models import Contato
+
+def fix_contatos():
+    with connection.cursor() as cursor:
+        cursor.execute("select escola_discente.id, count(*)  "
+                       "  from escola_discente LEFT JOIN escola_contato "
+                       "    ON (`escola_discente`.`id` = escola_contato.discente_id) "
+                       "group by escola_discente.id having count(*) > 1")
+        excluidos = 0
+        for discente in cursor.fetchall():
+            contato_count = 0
+            for contato in Contato.objects.filter(discente=discente[0]).order_by('id'):
+                contato_count += 1
+                if contato_count == 1:
+                    continue
+                else:
+                    contato.delete()
+                    excluidos += 1
+        print(f'Excluídos:{excluidos}')
+
+
+# Exclusão de alterações no próprio LogEntry
+def clean_logentry():
+    type_id = ContentType.objects.get(model='logentry').id
+    LogEntry.objects.filter(content_type_id=type_id).delete()
+
+def validate_id_cnpq():
+    count = 0
+    atualizados = 0
+    for pesquisador in Pesquisador.objects.filter(id_cnpq__isnull=False):
+        if pesquisador.dtupdate and pesquisador.dtupdate.year >= 2024:
+            atualizados += 1
+        else:
+            data = obtem_dt_cnpq(pesquisador.id_cnpq)
+            if not data:
+                print(pesquisador.nome)
+            count += 1
+    print(f'Pesquisadores lidos: {count}')
+    print(f'Pesquisadores atualizados: {atualizados}')
+
+
+def fix_inscricao_matricula():
+    for inscricao in Inscricao.objects.all():
+        if not inscricao.aluno.matricula_atual:
+            print(f'Aluno sem matrícula atual {inscricao.aluno}')
+        else:
+            inscricao.matricula = inscricao.aluno.matricula_atual
+            inscricao.save()
 
 
 class Command(BaseCommand):
     label = 'DB Fixes'
 
     def handle(self, *args, **options):
+        fix_inscricao_matricula()
+        # fix_matricula_atual()
+        # fix_orientacao_matricula()
+        # fix_contatos()
+        # update_area()
+        # update_modelo()
+        # validate_id_cnpq()
 
-        # Popular PeriodicosISSN para facilitar a busca
-        tot_excluido = 0
-        for rec in Periodico.objects.all():
-            master = Periodico.objects.filter(eissn=rec.issn).exclude(id=rec.id).first()
-            if master:
-                rec.delete()
-                tot_excluido += 1
-        print('Excluidos: %d' % tot_excluido)
+    # Corrige produções sem autor original
+    def handle_semautor(self, *args, **options):
+        count = 0
+        for producao in Producao.objects.all():
+            if producao.producaoautor_set.filter(autor=producao.pesquisador).count() == 0:
+                ProducaoAutor.objects.get_or_create(producao=producao, autor=producao.pesquisador)
+                count += 1
+        print(f'Autores Incluídos: {count}')
 
-
-        '''
-        # Exclusão dos registros que foram gravados a partir do E-ISSN e não pelo ISSN-L
-        tot_excluido = 0
-        for rec in Periodico.objects.all():
-            master = Periodico.objects.filter(eissn=rec.issn).exclude(id=rec.id).first()
-            if master:
-                rec.delete()
-                tot_excluido += 1
-        print('Excluidos: %d' % tot_excluido)
-        '''
+        count = 0
+        tipo = TipoProducao.objects.get(cod_externo='TrabalhosTecnicos')
+        tipo_correto = TipoProducao.objects.get(cod_externo='ApresentacoesTrabalho')
+        for producao in Producao.objects.filter(tipo=tipo):
+            if Producao.objects.filter(ident_unico=producao.ident_unico, tipo=tipo_correto).count() > 0:
+                producao.producaoautor_set.all().delete()
+                producao.delete()
+            count += 1
+        print(f'Produções excluídas: {count}')
 
         '''
         # Limpeza da Produção de Artigos
@@ -66,37 +153,6 @@ class Command(BaseCommand):
         Producao.objects.filter(projeto__isnull=True, ano__lt=2017).delete()
         '''
 
-        # Periodico.objects.filter(issn__isnull=True).delete()
-
-        tot_excluido = 0
-        for rec in Periodico.objects.filter(issn__isnull=False).values('issn').annotate(cnt=Count('id')).filter(cnt__gte=2):
-            base = Periodico.objects.filter(issn=rec['issn'], status='A').exclude(eissn='').order_by('qualis')
-            if not base:
-                base = Periodico.objects.filter(issn=rec['issn'])
-
-            if base.count() > 1:
-                if base[0].issn == base[0].eissn:
-                    base = base[1]
-                else:
-                    base = base[0]
-            else:
-                base = base[0]
-
-            for duplic in Periodico.objects.filter(issn=rec['issn']).exclude(id=base.id):
-                Producao.objects.filter(periodico=duplic).update(periodico=base)
-                print(duplic.issn)
-                duplic.delete()
-                tot_excluido += 1
-        print('Excluidos: %d' % tot_excluido)
-
-    def handle_cleanproducao(self, *args, **options):
-        for p in Periodico.objects.all():
-            if p.issn: p.issn = p.issn.upper()
-            if p.eissn: p.eissn = p.eissn.upper()
-            p.save()
-
-        #tipo_artigo = TipoProducao.objects.get(cod_externo='artigo')
-
     # Corrige o status de conclusão do curso dos alunos
     def handle_status_conclusao(self, *args, **options):
         tot_reg = 0
@@ -120,10 +176,5 @@ class Command(BaseCommand):
                     tot_reg += 1
         print('Registros alterados: %d' % tot_reg)
 
-        # Exclusão de alterações no próprio LogEntry
-        type_id = ContentType.objects.get(model='logentry').id
-        LogEntry.objects.filter(content_type_id=type_id).delete()
-
         for projeto in ProjetoPesquisa.objects.all():
             PesquisadorProjeto.objects.get_or_create(projeto=projeto, pesquisador=projeto.proponente)
-

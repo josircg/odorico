@@ -1,12 +1,15 @@
 #
 # Rotina de importação do citescore e SJC da Scopus
 # O arquivo pode sempre ser recuperado e atualizado a partir da URL https://www.scopus.com/sources
-# O csv de entrada deve ter as seguintes colunas:
-# ScopusID;Title;CitationCount;ScholarlyOutput;PercentCited;CiteScore;SNIP;SJR;ASJC;
-# subarea;Percentile;RANK;Publisher;Type;Open Access;Quartile;Top10;ISSN;E-ISSN
+# O csv de entrada deve ter as seguintes colunas (Não precisam estar na mesma ordem)
+# ScopusID;Title;CitationCount;ScholarlyOutput;PercentCited;CiteScore;SNIP;SJR;ASJC;subarea;Percentile;RANK;Publisher;Type;Open Access;Quartile;Top10;ISSN;E-ISSN
 #
-# Josir - 18/04/2021
+# Neste arquivo, o mesmo periódico se repete para cada subarea
+# Primeira importação - 18/04/2021
 #
+# Segunda importação - 19/05/2025
+# SourceID;Title;Type;Issn;SJR;H Index;Country;Publisher;Coverage;Categories;Areas
+# https://www.scimagojr.com/journalrank.php?year={year}&out=csv
 
 import datetime
 import os
@@ -27,7 +30,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)-3.3s] %(message)s",
     handlers=[
-        logging.FileHandler("periodicos.log", mode='a'),
+        logging.FileHandler("logs/scopus.log", mode='a'),
         logging.StreamHandler()
     ]
 )
@@ -93,18 +96,22 @@ class Command(BaseCommand):
             if not periodico:
                 periodico = Periodico.objects.filter(eissn=issn_busca).first()
                 if not periodico:
-                    issn_record = get_issn(issn_busca, extended=True)
-                    if type(issn_record) == tuple:
-                        issn, eissn, title, country, url = issn_record
+                    issn_record = get_issn(issn_busca)
+                    if isinstance(issn_record, dict):
+                        issn = issn_record['issn']
+                        eissn_list = issn_record['eissn_list']
+                        titles = issn_record['names_list']
+                        country = issn_record['country']
+                        url = issn_record['url'][:199]
                         if issn_busca != issn:
                             periodico = Periodico.objects.filter(issn=issn).first()
 
                         if periodico:
                             print('ISSN-L encontrado:%s busca:%s' % (issn, issn_busca))
                         else:
-                            if len(title) == 0:
-                                title = [ line.get('Title') ]
-                            periodico = Periodico(issn=issn, nome=title[0])
+                            if len(titles) == 0:
+                                titles = [ line.get('Title') ]
+                            periodico = Periodico(issn=issn, nome=titles[0])
                             inclusao = True
 
                         if len(eissn) > 0 and eissn[0] != '':
@@ -112,7 +119,7 @@ class Command(BaseCommand):
 
                         periodico.dtvalidacao = dtvalidacao
                         menor_nome = line.get('Title')
-                        for nome in title:
+                        for nome in titles:
                             if nome and len(nome) < len(menor_nome) and len(nome) > 10:
                                 menor_nome = nome
                         periodico.referencia = menor_nome[:80]
@@ -157,12 +164,9 @@ class Command(BaseCommand):
 
             for code in eissn:
                 if code:
-                    try:
-                        filho, _ = PeriodicoISSN.objects.get_or_create(periodico=periodico, issn=code)
-                        filho.meio = 'E' if filho.meio is None else filho.meio
-                        filho.save()
-                    except Exception as e:
-                        print('Erro incluindo issn %s' % code)
+                    filho, _ = PeriodicoISSN.objects.get_or_create(periodico=periodico, issn=code)
+                    filho.meio = 'E' if filho.meio is None else filho.meio
+                    filho.save()
 
             transaction.commit()
 

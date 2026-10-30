@@ -1,0 +1,26 @@
+{% extends "base_header.html" %}
+{% block title %}Orientações ativas{% endblock %}
+{% block content %}
+<div class="container d-flex flex-column py-4 py-xl-5">
+    <h1 style="text-align: center;margin-top: 15px;">Orientações ativas</h1>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr style="text-align: center;">
+                    <th style="border-top-width: 0px;">Orientador</th>
+                    <th style="border-top-width: 0px;">Discente</th>
+                    <th style="border-top-width: 0px;">Tipo</th>
+                </tr>
+            </thead>    
+            <tbody>
+                {% for reg in result.dataset %}
+                <tr style="text-align: center;">
+                    <td style="border-top-width: 1px;">{{ reg.orientador }}</td>
+                    <td style="border-top-width: 1px;">{{ reg.aluno }}</td>
+                    <td>{{ reg.tipo }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

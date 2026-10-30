@@ -1,0 +1,204 @@
+{% extends 'base_site.html' %}
+{% load static humanize %}
+{% block extrastyle %}
+     {{ block.super }}    
+<style>
+th.sortable {
+    padding: 0!important;
+}
+.align-right {
+    text-align: right;
+}
+h1 {
+    margin: 0 !important;
+}
+.icon-button {
+    margin-top: 3px;
+    margin-left: 8px;
+    cursor: pointer;
+    transition: all .2s;
+}
+.icon-button:hover {
+    transform: scale(1.2);
+}
+.cabecalho {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+/* Styles for the tooltip */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltiptext {
+    display: none;
+    position: absolute;
+    visibility: hidden;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px;
+    background-color: #333;
+    color: #fff;
+    border-radius: 4px;
+}
+
+/* Show the tooltip on hover */
+.tooltip:hover .tooltiptext {
+    display: block;
+    visibility: visible;
+}
+
+.flex-header {
+    display: flex;
+    align-items: center;
+}
+.flex-header a {
+    padding: 8px 5px!important;
+}
+
+.header-center{
+    justify-content: center;
+}
+.header-right{
+    justify-content: flex-end;
+}
+
+.changelist-filter {
+    display: flex;
+    gap: 20px;
+    max-width: 100%;
+    margin-bottom: 10px;
+}
+@media screen and (min-width: 769px) {
+  .changelist-filter {
+    flex-wrap: wrap;
+  }
+}
+.changelist-filter form {
+  max-width: 100%;
+}
+@media screen and (max-width: 768px) {
+  .changelist-filter form {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+.changelist-filter form .label {
+  display: block;
+}
+@media screen and (max-width: 768px) {
+  .changelist-filter form .input,
+.changelist-filter form .select {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+.changelist-filter .duplo {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+.changelist-filter .duplo div {
+  width: 100%;
+}
+@media screen and (max-width: 768px) {
+  .changelist-filter .duplo {
+    flex-direction: column;
+  }
+}
+@media screen and (max-width: 768px) {
+  .changelist-filter {
+    flex-direction: column;
+  }
+}
+
+.changelist-filter .inputButton {
+  display: flex;
+}
+.changelist-filter .inputButton input {
+  flex: 1;
+}
+.result {
+    margin: 0 auto; /* Centraliza o container */
+    padding: 8px 0;
+}
+.container {
+    display: grid;
+    grid-template-columns: repeat({{ counters|length}}, 1fr);
+    grid-template-rows: auto auto;
+    gap: 8px;
+  }
+  
+  /* Estilo das caixas */
+  .box {    
+    border: 2px solid #ccc;
+    text-align: center;
+    font-size: 20px; 
+    padding-left: 20px;
+    padding-right: 20px;   
+  }
+  .dash {
+    min-height: 500px;
+  }
+  
+  /* Segunda linha com duas colunas maiores sem espaçamento entre elas */
+  .container .box-large {
+    grid-column: 1 / span 4;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px; /* Remove o espaçamento entre as caixas grandes */
+  }
+  .counter {
+    font-size: 13px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 80px;
+  }
+
+  .counter .title {
+    font-size: 16px;
+    font-weight: 600;
+    font-family: sans-serif;
+  }
+  .counter .value {
+    font-size: 14px;
+    font-weight: 500;
+    font-family: sans-serif;
+  }
+
+  @media screen and (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+
+    .container .box-large {
+        grid-column: 1 / span 1;
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+{% block content %}
+    <div class="content-main">
+        <div class="" id="changelist">
+            <div class="result">               
+                <div class="container" id="counters"></div>         
+                <div class="container" id="dashboards"></div>
+                <p class="paginator" style="text-align: right">Obra do Odorico</p>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        window.counters = {{ counters|safe }};
+        window.dashboards = JSON.parse('{{ dashboards | escapejs }}');
+    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>        
+    <script src="{% static 'js/plotly-2.31.1.min.js' %}"></script>
+    <script src="{% static 'js/dashboard_resultados.js'%}?v=1"></script>
+{% endblock %}

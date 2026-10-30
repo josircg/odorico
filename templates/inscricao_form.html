@@ -1,0 +1,114 @@
+{% extends 'base_site_sem_header.html' %}
+{% load static i18n %}
+{% load crispy_forms_tags %}
+
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}">
+{{ block.super }}
+<link href="{% static 'admin/css/vendor/select2/select2.min.css' %}" type="text/css" media="screen" rel="stylesheet">
+<link href="{% static 'django_select2/django_select2.css' %}" type="text/css" media="screen" rel="stylesheet">
+{% endblock %}
+
+{% block title %}
+    {% if presenca %}
+        Formulário de presença para o {{ curso.tipo.descricao }} {{ curso.nome }}
+    {% else %}
+        Inscrição no curso {{ curso.nome }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+{% if presenca %}
+<h2>Formulário de presença para o {{ curso.tipo.descricao }} {{ curso.nome }}</h2>
+{% else %}
+<h2>Inscrição no curso {{ curso.nome }} {{ confirma_presenca }}</h2>
+{% endif %}
+{% if errors %}
+<div>
+    <p class="errornote">
+        {% if errors|length == 1 %}{% translate "Please correct the error below." %}{% else %}{% translate "Please
+        correct the errors below." %}{% endif %}
+    </p>
+</div>
+{% endif %}
+{% if mensagem_encerramento %}
+<div class="alert alert-warning" role="alert">
+    {{ mensagem_encerramento }}
+</div>
+<div class="form-row"><a href="/" class="buttonlink">Retornar</a></div></div>
+
+{% elif inscricao %}
+<div class="alert alert-warning" role="alert">
+    {{ messagem }}
+</div>
+<div class="form-row"><div class="col"><a href="/" class="buttonlink">Retornar</a></div></div>
+
+
+{% else %}
+{% if form_inscricao %}
+<form action="" method="post" enctype="multipart/form-data" id="{{ form.opts.model_name }}_form_inscricao">
+    {% csrf_token %}
+    {% block form_inscricao %}
+
+    {% for hidden in form_inscricao.hidden_fields %}
+    {{ hidden }}
+    {% endfor %}
+
+    {% crispy form_inscricao %}
+
+    {% for formset, inline_instance in inlines %}
+    {% include inline_instance.template %}
+    {% endfor %}
+
+    {% if form_inscricao.submit_helper %}
+    {% crispy form_inscricao form_inscricao.submit_helper %}
+    {% endif %}
+    {% endblock form_inscricao %}
+</form>
+{% else %}
+<form action="" method="post" enctype="multipart/form-data" id="{{ form.opts.model_name }}_form_verificar_email">
+    {% csrf_token %}
+    {% block form_verificar_email %}
+
+    {% for hidden in form_verificar_email.hidden_fields %}
+    {{ hidden }}
+    {% endfor %}
+
+    {% crispy form_verificar_email %}
+
+    {% for formset, inline_instance in inlines %}
+    {% include inline_instance.template %}
+    {% endfor %}
+
+    {% if form.submit_helper %}
+    {% crispy form_verificar_email form_verificar_email.submit_helper %}
+    {% endif %}
+    {% endblock form_verificar_email %}
+</form>
+{% endif %}
+{% endif %}
+{% endblock %}
+
+{% block footer %}
+{{ block.super }}
+<script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'admin/js/vendor/select2/select2.full.min.js' %}"></script>
+<script src="{% static 'django_select2/django_select2.js' %}"></script>
+<script src="{% static 'admin/js/jquery.init.js' %}"></script>
+<script src="{% static 'admin/js/core.js' %}"></script>
+<script src="{% static 'admin/js/inlines.js' %}"></script>
+<script id="django-admin-form-add-constants"
+        src="{% static 'admin/js/change_form.js' %}"
+        {% if add %}
+        data-model-name="{{ form.opts.model_name }}"
+        {% endif %}
+        async=""></script>
+<script>
+    django.jQuery(document).on('formset:added', function (event, $row, formsetName) {
+        // inicializa os combos de um inline criado dinamicamente
+        django.jQuery($row).find(".django-select2").djangoSelect2('destroy');
+        django.jQuery($row).find(".select2-container").remove();
+        django.jQuery($row).find('.django-select2').djangoSelect2();
+    });
+</script>
+{% endblock %}

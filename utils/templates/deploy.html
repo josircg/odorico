@@ -1,0 +1,12 @@
+{% extends 'base_form.html' %}
+
+{% block form %}
+  {% csrf_token %}
+  {% if result %}
+  <p>{{ result | safe }}</p>
+  {% else %}
+  <div class="submit-row">
+    <input type="submit" value="Update Theme">
+  </div>
+  {% endif %}
+{% endblock %}

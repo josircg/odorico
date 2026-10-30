@@ -1,57 +1,69 @@
-from collections import Counter
+from nucleo.models import ProducaoAutor, Producao, PesquisadorNomeCitacao, ProjetoPesquisa, \
+    PesquisadorProjeto, PesquisadorPrograma, ProfessorLinha, Orientacao, PesquisadorInstituicao, \
+    PesquisadorFomento, PesquisadorGrupo, Programa, PesquisadorFormacao, \
+    AlunoRegistro
 
-from django.db.models import Count
-from django.shortcuts import render
-from django.utils.timezone import now
-
-from nucleo.models import TipoProducao, ProducaoAutor
-from nucleo.views import normaliza_matriz
+from escola.models import CursoDocente
 
 
-def view_resumo_qualis(modeladmin, request, queryset):
-    ultimos_anos = [now().year - i for i in range(4)]
-    tipo_artigo = TipoProducao.objects.get(cod_externo='artigo')
-    context = {}
+def merge_pesquisadores(queryset):
+    # encontra o mais antigo
+    destino = queryset.order_by('id').first()
+    tot_pesquisadores = 0
+    for obj in queryset.order_by('id')[1:]:
+        destino.sexo = destino.sexo if destino.sexo else obj.sexo
+        destino.id_cnpq = destino.id_cnpq if destino.id_cnpq else obj.id_cnpq
+        if obj.dtupdate:
+            destino.dtupdate = obj.dtupdate if destino.dtupdate and obj.dtupdate > destino.dtupdate else destino.dtupdate
+        destino.raca = destino.raca if destino.raca else obj.raca
+        destino.email = destino.email if destino.email else obj.email
+        destino.CPF = destino.CPF if destino.CPF else obj.CPF
+        destino.orcid = destino.orcid if destino.orcid else obj.orcid
+        tot_pesquisadores += 1
+        for citacao in obj.pesquisadornomecitacao_set.all():
+            PesquisadorNomeCitacao.objects.get_or_create(pesquisador=destino, nome_citacao=citacao.nome)
+        AlunoRegistro.objects.filter(aluno=obj).update(aluno=destino)
+        PesquisadorInstituicao.objects.filter(pesquisador=obj).update(pesquisador=destino)
+        CursoDocente.objects.filter(docente=obj).update(docente=destino)
+        Producao.objects.filter(pesquisador=obj).update(pesquisador=destino)
+        ProjetoPesquisa.objects.filter(proponente=obj).update(proponente=destino)
+        PesquisadorProjeto.objects.filter(pesquisador=obj).update(pesquisador=destino)
+        PesquisadorGrupo.objects.filter(pesquisador=obj).update(pesquisador=destino)
+        PesquisadorFormacao.objects.filter(pesquisador=obj).update(pesquisador=destino)
+        PesquisadorFomento.objects.filter(pesquisador=obj).update(pesquisador=destino)
+        ProfessorLinha.objects.filter(professor=obj).update(professor=destino)
+        Orientacao.objects.filter(orientador=obj).update(orientador=destino)
+        PesquisadorPrograma.objects.filter(pesquisador=obj).update(pesquisador=destino)
 
-    context['values'] = []
-    context['soma'] = 0
-    context['totalizadores'] = []
-    context['labels'] = \
-        [{'value': 'Programa', 'style': '500px;'},
-         {'value': 'A1', 'style': '50px;'},
-         {'value': 'A2', 'style': '50px;'},
-         {'value': 'A3', 'style': '50px;'},
-         {'value': 'A4', 'style': '50px;'},
-         {'value': 'B1', 'style': '50px;'},
-         {'value': 'B2', 'style': '50px;'},
-         {'value': 'B3', 'style': '50px;'},
-         {'value': 'B4', 'style': '50px;'},
-         {'value': 'C', 'style': '50px;'},
-         {'value': 'ND', 'style': '50px;'},
-         {'value': 'NC', 'style': '50px;'},
-         {'value': 'TOTAL', 'style': '50px;'},
-         ]
+        for autor in obj.producaoautor_set.all():
+            if ProducaoAutor.objects.filter(producao=autor.producao, autor=destino):
+                autor.delete()
+            else:
+                autor.autor = destino
+                autor.save()
 
-    for programa in queryset:
-        producoes = ProducaoAutor.objects.filter(autor__pesquisadorprograma__programa=programa,
-                                                 producao__tipo=tipo_artigo, producao__ano__in=ultimos_anos). \
-            values('producao__periodico__qualis').annotate(cnt=Count('producao__id', distinct=True))
+        obj.delete()
 
-        context['values'].append({
-            'PROGRAMA': str(programa),
-            **normaliza_matriz(producoes),
-        })
+    if tot_pesquisadores > 0:
+        destino.save()
 
-    context['values'] = sorted(context['values'], key=lambda linha: linha['TOTAL'], reverse=True)
-    context['titulo'] = 'Resumo Qualis dos Programas de %d a %d' % (ultimos_anos[-1], ultimos_anos[0])
+    return tot_pesquisadores
 
-    # calcula a totalização total de todos os programas
-    totalizadores = context['values']
-    count_total_geral = Counter()
-    for totalizador in totalizadores:
-        for qualis, count in totalizador.items():
-            if not qualis == 'PROGRAMA':
-                count_total_geral[qualis] += int(count)
 
-    context['totalizadores'] = [{'TOTAL_PROGRAMAS': len(context['values']), **count_total_geral}]
-    return render(request, 'resumo_programa_qualis.html', {'result': context})
+def merge_instituicoes(queryset):
+    # encontra o mais antigo
+    destino = queryset.order_by('id').first()
+    tot_inst = 0
+    for obj in queryset.order_by('id')[1:]:
+        destino.sigla = destino.sigla if destino.sigla else obj.sigla
+        destino.pais = destino.pais if destino.pais else obj.pais
+        tot_inst += 1
+        Programa.objects.filter(instituicao=obj).update(instituicao=destino)
+        PesquisadorInstituicao.objects.filter(instituicao=obj).update(instituicao=destino)
+        PesquisadorFormacao.objects.filter(instituicao=obj).update(instituicao=destino)
+        obj.delete()
+
+    if tot_inst > 0:
+        destino.save()
+
+    return tot_inst

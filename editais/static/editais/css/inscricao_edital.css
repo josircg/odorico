@@ -1,0 +1,50 @@
+/* ================================
+   FORMULÁRIO DE INSCRIÇÃO – EDITAIS
+   ================================ */
+
+.inscricao-edital-form {
+    margin-top: 1.5rem;
+}
+
+/* Espaçamento entre TODOS os campos */
+.inscricao-edital-form .form-group,
+.inscricao-edital-form .mb-3,
+.inscricao-edital-form .mb-2 {
+    margin-bottom: 1.6rem !important;
+}
+
+/* Inputs e selects mais confortáveis */
+.inscricao-edital-form input,
+.inscricao-edital-form select,
+.inscricao-edital-form textarea {
+    padding: 0.55rem 0.75rem;
+}
+
+/* Títulos de seção */
+.inscricao-edital-form h4 {
+    margin-top: 3rem;
+    margin-bottom: 1.2rem;
+    font-weight: 600;
+}
+
+.inscricao-edital-form h5 {
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+/* Upload de documentos */
+.inscricao-edital-form .documento-item {
+    margin-bottom: 1.5rem;
+}
+
+/* Lista de documentos anexados */
+.inscricao-edital-form .documentos-anexados li {
+    margin-bottom: 0.6rem;
+    font-size: 0.95rem;
+}
+
+/* Alertas */
+.inscricao-edital-form .alert {
+    margin-bottom: 2rem;
+}

@@ -2,8 +2,8 @@
 # Rotina de importação via API da Scopus - Josir - 3/3/2023
 # A partir de 2022, a planilha da Scopus deixou de trazer o percentil e o SJR
 # Desta forma, temos que buscar via API
-# Essa rotina atualiza o SJR de 2021 diretamente na classe Periodicos
-# E atualiza o percentil e o citescore de anos anteriores
+# Essa rotina atualiza o SJR de 2024 diretamente na classe Periodicos
+# Como existe um limite semanal de 20k registros, a rotina deve ser executada em 2 ou 3 etapas.
 #
 
 import datetime
@@ -26,7 +26,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)-3.3s] %(message)s",
     handlers=[
-        logging.FileHandler("scopus.log", mode='a'),
+        logging.FileHandler("logs/scopus-2026.log", mode='a'),
         logging.StreamHandler()
     ]
 )
@@ -52,7 +52,7 @@ class Command(BaseCommand):
         tot_atualizados = 0
         tot_inativos = 0
         dtvalidacao = datetime.datetime.today()
-        for periodico in Periodico.objects.filter(scopus_code__isnull=False, status='A'):
+        for periodico in Periodico.objects.filter(scopus_code__isnull=False, status='A', area_id__isnull=False):
             tot_lidos += 1
             if tot_lidos % 100 == 0:
                 logging.info('Lidos:%d - Atualizados:%d' % (tot_lidos, tot_atualizados))
@@ -70,13 +70,13 @@ class Command(BaseCommand):
 
             for year_data in journal_data['citeScoreYearInfoList']['citeScoreYearInfo']:
                 year = year_data['@year']
-                if year in ('2017', '2018', '2019', '2020', '2021'):
+                if year == '2024':
                     detail = year_data['citeScoreInformationList'][0]['citeScoreInfo'][0]
-                    if year == '2021':
-                        citescore = convert_number(detail['citeScore'])
-                        periodico.citescore = citescore
-                        periodico.sjr = convert_number(journal_data['SJRList']['SJR'][0]['$'])
-                        periodico.save()
+                    citescore = convert_number(detail['citeScore'])
+                    periodico.citescore = citescore
+                    periodico.sjr = convert_number(journal_data['SJRList']['SJR'][0]['$'])
+                    periodico.dtvalidacao = dtvalidacao
+                    periodico.save()
                     schema, _ = Schema.objects.get_or_create(
                         descricao='Scopus %s' % year, sigla='CS%s' % year,
                         ano_inicial=year, ano_final=year)
@@ -84,7 +84,6 @@ class Command(BaseCommand):
                     for subject_rank in detail['citeScoreSubjectRank']:
                         asjc = subject_rank['subjectCode']
                         percentile = subject_rank['percentile']
-                        citescore = subject_rank['citeScore']
                         try:
                             assunto = Assunto.objects.get(schema=crossref_schema, cod_externo=asjc.strip())
                         except Assunto.DoesNotExist:
@@ -93,7 +92,7 @@ class Command(BaseCommand):
                         indicador, _ = PeriodicoIndicador.objects.get_or_create(periodico=periodico,
                                                                                 schema=schema, area=assunto)
                         indicador.classe = percentile
-                        indicador.indicador = citescore
+                        indicador.indicador = subject_rank.get('rank')
                         indicador.save()
 
             log_object(periodico, 'Scopus SJR atualizado', inclusao=False)

@@ -1,0 +1,573 @@
+{% extends 'base_site_sem_header.html' %}
+{% load static humanize %}
+{% block title %}Periódicos{% endblock %}
+{% block extrastyle %}
+     {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/tingle.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/periodicos_dashboard.css' %}?v=9">
+{% endblock %}
+{% block content %}
+    <div class="content-main">
+        <nav class="periodicos-navbar" aria-label="Navegação da listagem de periódicos">
+            <div class="periodicos-navbar-inner">
+                <a class="periodicos-brand" href="{% url 'home' %}" title="Odorico"></a>
+                <h1 class="periodicos-title">Listagem de Periódicos</h1>
+                <div class="periodicos-actions">
+                    <button type="button" title="Informações" class="periodicos-action-btn" onclick="showModal()"><i class="fas fa-info-circle" aria-hidden="true"></i>Ajuda</button>
+                    <a title="Dashboards" class="periodicos-action-btn periodicos-action-btn--primary" href="{% url 'dashboard_periodicos' %}"><i class="fas fa-chart-line" aria-hidden="true"></i>Dashboard</a>
+                </div>
+            </div>
+        </nav>
+        <div class="module tabela" id="changelist">
+            <div class="results">
+                <div class="changelist-filter">
+                    <form action="/periodicos/" method="GET" id="form_issn" class="periodicos-filter-card periodicos-filter-issn">
+                      <label for="issn_search" class="label">ISSN</label>
+                      <div class="periodicos-filter-inline">
+                      <input required type="text" name="issn_search" id="issn_search" value="{{ result.search_issn }}" class="periodicos-filter-input">
+                      <button type="submit" class="periodicos-filter-search-btn" title="Busca apenas pelo ISSN">
+                        <i class="far fa-search"></i>
+                      </button>
+                        </div>
+                    </form>
+                    <form action="/periodicos/" method="GET" id="form_area" class="periodicos-filter-card periodicos-filter-main">
+                      <input type="hidden" name="area_manual" id="area_manual" value="{% if result.area_manual %}1{% else %}0{% endif %}">
+                      <div class="periodicos-filter-field">
+                          <label for="area_id" class="label">Área CNPQ</label>
+                          <select class="filter select periodicos-filter-select" name="area" id="area_id">
+                            <option value="0" selected="selected">
+                              Todos
+                            </option>
+                            {% for area in result.area %}
+                            <option value="{{ area.id }}" {% if area.id == result.area_select %} selected="selected" {% endif %}>
+                              {{ area.nome }}
+                            </option>
+                            {% endfor %}
+                          </select>
+                      </div>
+                      <div class="periodicos-filter-field">
+                          <label for="assunto_id" class="label">Área ASJC / CrossRef</label>
+                          <select class="filter select periodicos-filter-select" name="assunto" id="assunto_id">
+                            <option value="0" selected="selected">
+                              Todos
+                            </option>
+                            {% for assunto in result.assuntos %}
+                            <option value="{{ assunto.id }}" {% if assunto.id == result.assunto_select %} selected="selected" {% endif %}>
+                              {{ assunto.descricao }}
+                            </option>
+                            {% endfor %}
+                          </select>
+                      </div>
+                      <div class="periodicos-filter-field">
+                           <label for="revista_search" class="label">Nome do Periódico / Keywords</label>
+                           <input type="text" name="revista_search" id="revista_search" class="input periodicos-filter-input" value="{{ result.search_revista }}" />
+                      </div>
+                      <div class="periodicos-filter-field periodicos-filter-submit">
+                           <button type="submit" class="periodicos-filter-search-btn" title="Realiza a Busca Textual e por Área">
+                           <i class="far fa-search"></i>
+                           </button>
+                      </div>
+                      <div class="periodicos-filter-actions">
+                      <div class="periodicos-switch-group">
+                        <label for="diamond_check" class="periodicos-switch-item" title="Retornar apenas periódicos realmente abertos (Diamond)">
+                          <input id="diamond_check" class="periodicos-switch-input" type="checkbox" name="diamond_check" {% if result.diamond_check %} checked {% endif %}>
+                          <span class="periodicos-switch-slider" aria-hidden="true"></span>
+                          <span class="periodicos-switch-caption">
+                            <span>Diamantes</span>
+                            <span class="tooltip periodicos-info-icon">
+                                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M256 48C141.2 48 48 141.2 48 256s93.2 208 208 208 208-93.2 208-208S370.8 48 256 48zm21 333h-42v-42h42v42zm-.2-63h-41.6c0-67 62.4-62.2 62.4-103.8 0-22.9-18.7-41.7-41.6-41.7S214.4 192 214.4 214h-41.6c0-46 37.2-83 83.2-83s83.2 37.1 83.2 83.1c0 52-62.4 57.9-62.4 103.9z"></path></svg>
+                                <span class="tooltiptext">Retornar apenas periódicos realmente abertos (Diamond)</span>
+                            </span>
+                          </span>
+                        </label>
+                      </div>
+                      <div class="periodicos-switch-group">
+                        <label for="keyword_check" class="periodicos-switch-item" title="Inclui palavras chaves na busca textual">
+                          <input id="keyword_check" class="periodicos-switch-input" type="checkbox" name="keyword_check" {% if result.keyword_check %} checked {% endif %}>
+                          <span class="periodicos-switch-slider" aria-hidden="true"></span>
+                          <span class="periodicos-switch-caption">
+                            <span>Palavras-Chaves</span>
+                            <span class="tooltip periodicos-info-icon">
+                                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M256 48C141.2 48 48 141.2 48 256s93.2 208 208 208 208-93.2 208-208S370.8 48 256 48zm21 333h-42v-42h42v42zm-.2-63h-41.6c0-67 62.4-62.2 62.4-103.8 0-22.9-18.7-41.7-41.6-41.7S214.4 192 214.4 214h-41.6c0-46 37.2-83 83.2-83s83.2 37.1 83.2 83.1c0 52-62.4 57.9-62.4 103.9z"></path></svg>
+                                <span class="tooltiptext">Inclui palavras chaves na busca textual</span>
+                            </span>
+                          </span>
+                        </label>
+                      </div>
+                      </div>
+                   </form>
+                 </div>
+
+                 <div class="periodicos-table-wrapper">
+                    <table id="result_list" style="margin-top: 15px;">
+                        <thead>
+                            <tr>
+                                {% for label in result.labels %}
+                                    <th scope="col" class="sortable column-nome {{label.class}} {% if label.value == 'issn' or label.value == 'qualis' or label.value == 'eissn' or label.value == 'modelo_economico' %}align-center{% endif %}" >
+                                        <div class="text flex-header {% if forloop.first %}periodicos-frozen-cell{% endif %}">
+                                            {% if label.hint %}
+                                                <div class="tooltip">
+                                                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M256 48C141.2 48 48 141.2 48 256s93.2 208 208 208 208-93.2 208-208S370.8 48 256 48zm21 333h-42v-42h42v42zm-.2-63h-41.6c0-67 62.4-62.2 62.4-103.8 0-22.9-18.7-41.7-41.6-41.7S214.4 192 214.4 214h-41.6c0-46 37.2-83 83.2-83s83.2 37.1 83.2 83.1c0 52-62.4 57.9-62.4 103.9z"></path></svg>
+                                                    <span class="tooltiptext">{{ label.hint }}</span>
+                                                </div>
+                                            {% endif %}
+                                            {% if label.order %}
+                                                <a href="?{{label.order}}">{{label.label}}</a>
+                                            {% else %}
+                                                <a href="{% url 'periodicos' %}">{{label.label}}</a>
+                                            {% endif %}
+                                        </div>
+                                    <div class="clear"></div>
+                                    </th>
+                                 {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for value in result.values %}
+                                <tr class="{% cycle 'row1' 'row2' %}">
+                                    <th>
+                                        <div class="periodicos-frozen-cell">
+                                            <button type="button" class="periodicos-detail-trigger" data-issn="{{ value.issn }}">
+                                                {{ value.nome }}
+                                            </button>
+                                            {% if value.status == 'F' %}<b>(INATIVO)</b>{% endif %}
+                                        </div>
+                                    </th>
+                                   <td class="align-center">{{ value.issn }}</td>
+                                   <td class="align-center">
+                                       <span class="qualis-cell">
+                                           <span>{{ value.qualis }}</span>
+                                           {% if value.qualis_indicator == 'up' %}
+                                               <i class="fas fa-arrow-up qualis-indicator qualis-indicator--up" title="Qualis melhorou"></i>
+                                           {% elif value.qualis_indicator == 'down' %}
+                                               <i class="fas fa-arrow-down qualis-indicator qualis-indicator--down" title="Qualis piorou"></i>
+                                           {% elif value.qualis_indicator == 'new' %}
+                                               <i class="fas fa-star qualis-indicator qualis-indicator--new" title="Sem qualis anterior (ND)"></i>
+                                           {% endif %}
+                                       </span>
+                                   </td>
+                                   {% if value.eissn %}
+                                       <td class="align-center">{{ value.eissn }}</td>
+                                   {% else %}
+                                       <td class="align-center">-</td>
+                                   {% endif %}
+                                    {% if value.modelo_economico == 'D' %}
+                                        <td class="align-center">
+                                            <img height="18px" src="/static/img/diamond.png" alt="diamond">
+                                        </td>
+                                    {% elif value.modelo_economico == 'T' %}
+                                        <td class="align-center">
+                                            <img height="18px" src="/static/img/cadeado.png" alt="trancado">
+                                        </td>
+                                    {% elif value.modelo_economico == 'A' %}
+                                        <td class="align-center">
+                                            <img height="18px" src="/static/img/coin.png" alt="APC">
+                                        </td>
+                                    {% elif value.modelo_economico == 'P' %}
+                                        <td class="align-center">
+                                            <img height="18px" src="/static/img/badred.png" alt="predatório">
+                                        </td>
+                                    {% else %}
+                                        <td class="align-center"></td>
+                                    {% endif %}
+                                    {% if value.oalex_code %}
+                                        <td class="align-right"><a target="_blank" href="https://openalex.org/sources/{{ value.oalex_code }}">{{ value.oalex_h5|floatformat:0 }}</a></td>
+                                    {% else %}
+                                        <td class="align-right">-</td>
+                                    {% endif %}
+                                    {% if value.h5 %}
+                                        <td class="align-right"><a target="_blank" href="https://scholar.google.com/citations?hl=pt-BR&vq=en&view_op=list_hcore&venue={{ value.google_code }}">{{ value.h5|floatformat:1 }}</a></td>
+                                    {% else %}
+                                        <td class="align-right">-</td>
+                                    {% endif %}
+
+                                    {% if value.citescore %}<td class="align-right"><a href="https://www.scopus.com/sourceid/{{ value.scopus_code }}">{{ value.citescore }}</a></td>{% else %}<td class="align-right"> - </td>{% endif %}
+                                    {% if value.sjr %}<td class="align-right">{{ value.sjr|floatformat:3|intcomma }}</td>{% else %}<td class="align-right">-</td>{% endif %}
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="9" style="text-align:center; padding: 18px;">Nenhum periódico encontrado para os filtros informados.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                 </div>
+                 <div class="periodicos-table-footer">
+                    <form action="/periodicos/" method="GET" class="per-page-form">
+                        {% for key, value in result.query_items_no_page_per_page %}
+                            <input type="hidden" name="{{ key }}" value="{{ value }}">
+                        {% endfor %}
+                        <label for="per_page">Itens por página</label>
+                        <select id="per_page" name="per_page" onchange="this.form.submit()">
+                            {% for option_value, option_label in result.per_page_options %}
+                                <option value="{{ option_value }}" {% if option_value == result.selected_per_page %}selected{% endif %}>{{ option_label }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+
+                    {% if result.page_obj.paginator.num_pages > 1 %}
+                    <div class="periodicos-pagination">
+                        {% if result.page_obj.has_previous %}
+                            <a class="periodicos-page-link" href="?{{ result.query_string_no_page }}{% if result.query_string_no_page %}&{% endif %}page={{ result.page_obj.previous_page_number }}">Anterior</a>
+                        {% endif %}
+
+                        {% for item in result.page_items %}
+                            {% if item == '...' %}
+                                <span class="periodicos-page-dots">...</span>
+                            {% else %}
+                                <a class="periodicos-page-link {% if item == result.page_obj.number %}is-active{% endif %}" href="?{{ result.query_string_no_page }}{% if result.query_string_no_page %}&{% endif %}page={{ item }}">{{ item }}</a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if result.page_obj.has_next %}
+                            <a class="periodicos-page-link" href="?{{ result.query_string_no_page }}{% if result.query_string_no_page %}&{% endif %}page={{ result.page_obj.next_page_number }}">Próxima</a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                 </div>
+
+                 <div class="periodicos-contact-card">
+                    <div class="periodicos-contact-layout">
+                        <div class="periodicos-contact-intro">
+                            <div class="periodicos-contact-head">
+                                <span class="periodicos-contact-kicker">
+                                    <i class="fas fa-envelope" aria-hidden="true"></i>
+                                    Canal direto
+                                </span>
+                                <img class="periodicos-contact-logo" src="{% static 'img/logo.png' %}" alt="Odorico">
+                            </div>
+                            <h2>Encontrou algo para melhorar na base?</h2>
+                            <p>Esta listagem é atualizada continuamente com diferentes fontes de dados.</p>
+                            <p>Envie URL, ISSN ou ajuste sugerido para inclusão/atualização.</p>
+                            <p>Se você é editor(a), pode usar esse canal para revisar informações do periódico.</p>
+                        </div>
+
+                        <form action="/periodicos/" method="POST" id="contact_form" class="periodicos-contact-form">{% csrf_token %}
+                            <div class="periodicos-contact-grid">
+                                <div>
+                                    <label for="email">Email</label>
+                                    <input type="email" name="email" id="email" required>
+                                </div>
+                                <div>
+                                    <label for="sugestao">Sugestão</label>
+                                    <textarea id="sugestao" name="sugestao" rows="5" required></textarea>
+                                </div>
+                            </div>
+                            <button type="submit" class="periodicos-submit-btn">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
+    <script src="{% static 'js/tingle.min.js' %}"></script>
+    <script src="{% static 'js/plotly-2.31.1.min.js' %}"></script>
+    <script>
+        document.getElementById('area_id').onchange = function (event) {
+            document.getElementById('area_manual').value = event.target.value && event.target.value !== '0' ? '1' : '0';
+            if (event.target.value >= 0){
+                 document.getElementById('form_area').submit();
+            }
+        }
+        document.getElementById('diamond_check').onchange = function () {
+            document.getElementById('form_area').submit();
+        }
+        document.getElementById('keyword_check').onchange = function () {
+            document.getElementById('form_area').submit();
+        }
+        /* $('#issn_search').mask('AAAA-AAAA');
+        $('#assunto_id').change(e => {
+            $('#area_id').val(null);
+            $('#form_area').submit();
+        });
+        $('#area_id').change(e => {
+            $('#assunto_id').val(null);
+            $('#form_area').submit();
+        });
+        */
+    </script>
+    <script>
+        // instanciate new modal
+        let modal = new tingle.modal({
+            footer: false,
+            stickyFooter: false,
+            closeMethods: ['overlay', 'escape'],
+            closeLabel: "Fechar",
+            cssClass: ['periodicos-help-modal'],
+            onOpen: function() {
+                console.log('modal open');
+            },
+            onClose: function() {
+                console.log('modal closed');
+            },
+            beforeClose: function() {
+                // e.g. save content before closing the modal
+                return true; // close the modal
+            }
+        });
+
+        // set content
+        modal.setContent(
+            '<div class="periodicos-help-content"><button type="button" class="periodicos-help-close" onclick="closeModal()" aria-label="Fechar">×</button><h2>Sobre a listagem de Periódicos</h2><p>Esta listagem é fruto de 7 anos de trabalho de coleta e validação de ISSNs de diversas bases de dados</p>' +
+            '<p>Contém os dados agregados da QUALIS (2021-2024), Scopus (2021), Web of Science (2023), Google Scholar (2020), DOAJ (2026), OpenAlex (2024), Diamond Journals (2023) e SciMago (2024)</p>'+
+            '<p>O Qualis está atualizado com o última tabela de 01/2026</p>'+
+            '<p>Caso o períodico conste em tabelas anteriores do Qualis, mas não esteja presente na tabela atual, o sistema mantém a última qualificação</p>'+
+            '<p>Algumas dicas:</p>' +
+            '<ul><li>É possível fazer a busca diretamente pelo ISSN, por área de conhecimento ASJC/Citescore/Scopus ou pelo nome do periódico</li>' +
+            '<li>O filtro por Área CNPQ é uma categorização feita por nós e por isso ainda contém apenas as áreas de nosso interesse</li>' +
+            '<li>Para uma categorização por área mais ampla, utilize a busca por ASJC</li>' +
+            '<li>As palavras-chaves são recuperadas da Scopus, OpenAlex e DOAJ, assim estão em inglês</li>' +
+            '<li>É possível ordenar os periódicos pelo Qualis, H5, SJR e Citescore, clicando no título da coluna</li>' +
+            '<li>Modelos Econômicos: <img width="16" height="16" src="/static/img/diamond.png" alt="diamante"> são os de acesso aberto (não cobram do autor nem do leitor). <img width="16" height="16" src="/static/img/cadeado.png" alt="cadeado"> são trancados (cobram do leitor) e <img width="20" height="20" src="/static/img/coin.png" alt="moeda"> cobram para publicar (APC)</li>'+
+            '</ul><div class="periodicos-help-actions"><button type="button" class="periodicos-help-ok" onclick="closeModal()">OK</button></div></div>');
+        function showModal() {
+            modal.open();
+        }
+        function closeModal() {
+            modal.close();
+        }
+
+    </script>
+    <script>
+        const detailModal = new tingle.modal({
+            footer: false,
+            stickyFooter: false,
+            closeMethods: ['overlay', 'escape'],
+            closeLabel: 'Fechar',
+            cssClass: ['periodicos-help-modal', 'periodicos-detail-modal'],
+        });
+        let qualisMiniChart = null;
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function formatList(items) {
+            if (!items || !items.length) {
+                return '<span class="periodicos-detail-empty">Nao informado</span>';
+            }
+            return items.map(item => `<span class="periodicos-detail-tag">${escapeHtml(item)}</span>`).join('');
+        }
+
+        function getEconomicModelIcon(model) {
+            const iconMap = {
+                'D': { src: '/static/img/diamond.png', alt: 'Diamond', label: 'Diamond' },
+                'T': { src: '/static/img/cadeado.png', alt: 'Trancado', label: 'Trancado' },
+                'A': { src: '/static/img/coin.png', alt: 'APC', label: 'APC' },
+                'P': { src: '/static/img/badred.png', alt: 'Predatorio', label: 'Predatorio' },
+            };
+            return iconMap[model] || null;
+        }
+
+        function getQualisChartSeries(data) {
+            if (!Array.isArray(data.qualis_chart_values) || !data.qualis_chart_values.length) {
+                return [];
+            }
+
+            const normalized = data.qualis_chart_values
+                .map((point) => {
+                    const [year, value] = Object.entries(point || {})[0] || [];
+                    if (!year || value === undefined || value === null) {
+                        return null;
+                    }
+                    return {
+                        year: String(year),
+                        value: Number(value),
+                    };
+                })
+                .filter((point) => point && !Number.isNaN(point.value))
+                .sort((a, b) => Number(a.year) - Number(b.year));
+
+            const byYear = new Map();
+            normalized.forEach((point) => {
+                byYear.set(point.year, point.value);
+            });
+
+            return Array.from(byYear.entries()).map(([year, value]) => ({ year, value }));
+        }
+
+        function renderQualisMiniChart(data) {
+            const chartNode = document.querySelector('#periodicos-qualis-chart');
+            if (!chartNode || typeof Plotly === 'undefined') {
+                return;
+            }
+
+            const series = getQualisChartSeries(data);
+            if (!series.length) {
+                chartNode.innerHTML = '<span class="periodicos-detail-empty">Sem historico disponivel</span>';
+                return;
+            }
+
+            const trace = {
+                x: series.map((point) => point.year),
+                y: series.map((point) => point.value),
+                mode: 'lines+markers',
+                line: {
+                    color: '#f0853f',
+                    width: 2.5,
+                    shape: 'linear',
+                },
+                marker: {
+                    color: '#f0853f',
+                    size: 6,
+                },
+                hovertemplate: '%{x}: %{y}<extra></extra>',
+            };
+
+            const layout = {
+                margin: { t: 4, r: 8, b: 26, l: 8 },
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                showlegend: false,
+                xaxis: {
+                    type: 'category',
+                    fixedrange: true,
+                    showgrid: false,
+                    tickmode: 'array',
+                    tickvals: series.map((point) => point.year),
+                    ticktext: series.map((point) => point.year),
+                    tickfont: { size: 10, color: '#6d6487' },
+                    zeroline: false,
+                },
+                yaxis: {
+                    fixedrange: true,
+                    showgrid: false,
+                    showticklabels: false,
+                    zeroline: false,
+                    rangemode: 'tozero',
+                },
+            };
+
+            const config = {
+                displayModeBar: false,
+                staticPlot: true,
+                responsive: true,
+            };
+
+            Plotly.newPlot(chartNode, [trace], layout, config).then((chart) => {
+                qualisMiniChart = chart;
+            });
+        }
+
+        function renderDetailModal(data) {
+            const economicModel = getEconomicModelIcon(data.modelo_economico);
+            const modelHtml = economicModel
+                ? `<span class="periodicos-detail-model"><img src="${economicModel.src}" alt="${economicModel.alt}"><span>${economicModel.label}</span></span>`
+                : '<span class="periodicos-detail-empty">Nao informado</span>';
+            const siteUrl = data.url || `https://portal.issn.org/resource/ISSN/${encodeURIComponent(data.issn)}`;
+            const sjrUrl = data.scopus_code
+                ? `https://www.scimagojr.com/journalsearch.php?q=${encodeURIComponent(data.scopus_code)}&tip=sid&clean=0`
+                : '';
+            const sjrValue = data.sjr ? escapeHtml(data.sjr) : 'Nao informado';
+            const previousQualis = data.qualis_ant ? escapeHtml(data.qualis_ant) : 'ND';
+            const countryHtml = `<strong>${escapeHtml(data.pais || 'Nao informado')}</strong>`;
+
+            detailModal.setContent(
+                `<div class="periodicos-detail-content">
+                    <button type="button" class="periodicos-help-close" onclick="closeDetailModal()" aria-label="Fechar">×</button>
+                    <div class="periodicos-detail-header">
+                        <h2>${escapeHtml(data.nome)}</h2>
+                    </div>
+                    <div class="periodicos-detail-grid">
+                        <div class="periodicos-detail-card">
+                            <span class="periodicos-detail-label">Modelo Economico</span>
+                            ${modelHtml}
+                        </div>
+                        <div class="periodicos-detail-card">
+                            <span class="periodicos-detail-label">Pais</span>
+                            ${countryHtml}
+                        </div>
+                        <div class="periodicos-detail-card">
+                            <span class="periodicos-detail-label">Editora</span>
+                            <strong>${escapeHtml(data.editora || 'Nao informado')}</strong>
+                        </div>
+                        <div class="periodicos-detail-card">
+                            <span class="periodicos-detail-label">ISSN</span>
+                            <strong>${escapeHtml(data.issn || '-')}</strong>
+                        </div>
+                    </div>
+                    <div class="periodicos-detail-metrics periodicos-detail-metrics--three">
+                        <div class="periodicos-detail-card periodicos-detail-qualis-card">
+                            <span class="periodicos-detail-label">Qualis</span>
+                            <div class="periodicos-detail-qualis-current periodicos-detail-qualis-current--solo">
+                                <div class="periodicos-detail-qualis-badge">${escapeHtml(data.qualis || 'ND')}</div>
+                                <span class="periodicos-detail-qualis-current-label">Qualis atual</span>
+                                <span class="periodicos-detail-qualis-current-meta">Anterior: ${previousQualis}</span>
+                            </div>
+                        </div>
+                        <div class="periodicos-detail-card periodicos-detail-sjr-card">
+                            <span class="periodicos-detail-label">Indice SJR</span>
+                            <div class="periodicos-detail-sjr-value">${sjrValue}</div>
+                            ${sjrUrl ? `<a class="periodicos-detail-inline-link" href="${sjrUrl}" target="_blank" rel="noopener noreferrer">Ver no Scimago</a>` : '<span class="periodicos-detail-empty">Link indisponivel</span>'}
+                        </div>
+                        <div class="periodicos-detail-card periodicos-detail-qualis-chart-card">
+                            <span class="periodicos-detail-label">Evolucao Qualis</span>
+                            <div class="periodicos-detail-qualis-chart-block">
+                                <div class="periodicos-detail-qualis-meta">
+                                    <strong></strong>
+                                </div>
+                                <div id="periodicos-qualis-chart" class="periodicos-detail-qualis-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="periodicos-detail-sections-grid">
+                        <div class="periodicos-detail-section">
+                            <span class="periodicos-detail-label">Areas ASJC</span>
+                            <div class="periodicos-detail-tags">${formatList(data.areas_asjc)}</div>
+                        </div>
+                        <div class="periodicos-detail-section">
+                            <span class="periodicos-detail-label">Subarea OpenAlex</span>
+                            <div class="periodicos-detail-tags">${formatList(data.openalex_subareas)}</div>
+                        </div>
+                        <div class="periodicos-detail-section">
+                            <span class="periodicos-detail-label">Keywords</span>
+                            <p class="periodicos-detail-keywords">${escapeHtml(data.keywords || 'Não informado')}</p>
+                        </div>
+                    </div>
+                    <div class="periodicos-detail-actions">
+                        <a class="periodicos-submit-btn periodicos-detail-site-btn" href="${siteUrl}" target="_blank" rel="noopener noreferrer">
+                            <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                            <span>Site da Revista</span>
+                        </a>
+                    </div>
+                </div>`
+            );
+            detailModal.open();
+            renderQualisMiniChart(data);
+        }
+
+        async function openDetailModal(issn) {
+            try {
+                const response = await fetch(`/get_issn/${encodeURIComponent(issn)}/`);
+                const data = await response.json();
+                if (data.error) {
+                    return;
+                }
+                renderDetailModal(data);
+            } catch (error) {
+                console.error('Erro ao carregar os detalhes do periodico', error);
+            }
+        }
+
+        function closeDetailModal() {
+            if (qualisMiniChart && typeof Plotly !== 'undefined') {
+                Plotly.purge(qualisMiniChart);
+                qualisMiniChart = null;
+            }
+            detailModal.close();
+        }
+
+        document.querySelectorAll('.periodicos-detail-trigger').forEach(trigger => {
+            trigger.addEventListener('click', () => openDetailModal(trigger.dataset.issn));
+        });
+
+    </script>
+{% endblock %}

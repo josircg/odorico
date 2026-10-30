@@ -36,6 +36,14 @@ def normalizar_data(data_string):
     return date(day=int(dia), month=int(mes), year=int(ano))
 
 
+# Transforma um código de um choices em seu display value equivalente
+# a partir da definição do modelo e do atributo desejado
+def get_display_str(field_value, model_class, field_name):
+    instance = model_class(**{field_name: field_value})
+    display_method = getattr(instance, f"get_{field_name}_display", None)
+    return display_method()
+
+
 def url_display(obj):
     content_type = ContentType.objects.get_for_model(obj)
     try:

@@ -1,0 +1,92 @@
+{% extends "base_header.html" %}
+
+{% block content %}
+<div class="container py-4 py-xl-5">
+    <div class="card mx-auto shadow-sm p-4" style="max-width: 60rem;">
+        <h2 class="text-center mb-3">Requerimentos</h2>
+        <p class="text-center text-muted">
+            Aqui você encontra as solicitações que podem ser feitas para a secretaria e para a coordenação.
+        </p>
+        {% if tipos_ocorrencia %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">Requerimento</th>
+                            <th scope="col" class="text-center">Detalhes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tipo in tipos_ocorrencia %}
+                        <tr>
+                            <td>
+                           <a href="{{ tipo.url_requerimento }}" class="text-decoration-none">
+                                {{ tipo.descricao }}
+                            </a>
+                            </td>
+                            <td class="text-center">
+                                {% if tipo.detalhe %}
+                                    <button class="btn btn-outline-secondary btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalDetalhe{{ forloop.counter }}">
+                                        <i class="bi bi-info-circle"></i> Mais detalhes
+                                    </button>
+
+                                    <!-- Modal de Detalhes -->
+                                    <div class="modal fade" id="modalDetalhe{{ forloop.counter }}" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Detalhes do Requerimento</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    {{ tipo.detalhe }}
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <span class="text-muted">N/A</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <h5 class="modal-title">Nenhum requerimento habilitado para a sua matrícula</h5>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-center text-muted">Não há requerimentos ativos.</p>
+        {% endif %}
+        {% if realizados %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" class="text-center">Dt.Solicitação</th>
+                            <th scope="col">Descrição</th>
+                            <th scope="col">Detalhes</th>
+                            <th scope="col" class="text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for evento in realizados %}
+                        <tr>
+                            <td class="text-center">{{ evento.dtinclusao|date:"d/m/Y" }}</td>
+                            <td>{{ evento.descricao }}</td>
+                            <td>{{ evento.link_externo }}</td>
+                            <td class="text-center">{{ evento.get_status_display }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

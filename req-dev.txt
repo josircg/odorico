@@ -1,4 +1,7 @@
 # Utilizado apenas em ambiente de desenvolvimento
 -r requirements.txt
-fabric==2.7.0
-model_bakery==1.10.1
+model_bakery
+jupyter
+fabric
+django-debug-toolbar
+django-sql-explorer

@@ -1,0 +1,17 @@
+{% extends 'base_site.html' %}
+
+{% block content %}
+  <div id="content-main">
+    <p>Você não registrou nenhuma produção acadêmica. Confirma o envio mesmo assim?</p>
+    <div class="form-row">
+      <div class="submit-row">
+        <div class="col">
+          <a href="?confirmacao=1" class="buttonlink-success">Sim</a>
+        </div>
+        <div class="col">
+          <a href="{{ record.get_absolute_url }}" class="buttonlink">Não</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

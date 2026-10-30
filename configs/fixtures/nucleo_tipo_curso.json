@@ -1,0 +1,9 @@
+[{"model": "nucleo.tipocurso", "pk": 1, "fields": {"descricao": "Especialização Lato sensu"}},
+ {"model": "nucleo.tipocurso", "pk": 2, "fields": {"descricao": "Mestrado Interinstitucional"}},
+ {"model": "nucleo.tipocurso", "pk": 3, "fields": {"descricao": "Mestrado Profissional"}},
+ {"model": "nucleo.tipocurso", "pk": 4, "fields": {"descricao": "Mestrado Acadêmico"}},
+ {"model": "nucleo.tipocurso", "pk": 5, "fields": {"descricao": "Doutorado Interinstitucional"}},
+ {"model": "nucleo.tipocurso", "pk": 6, "fields": {"descricao": "Doutorado Profissional"}},
+ {"model": "nucleo.tipocurso", "pk": 7, "fields": {"descricao": "Doutorado Acadêmico"}},
+ {"model": "nucleo.tipocurso", "pk": 8, "fields": {"descricao": "Pós-Doutorado"}}
+]

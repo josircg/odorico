@@ -1,34 +1,193 @@
-{% extends "base_site.html" %}
-
+{% extends "base.html" %}
+{% load static %}
 {% block title %}Sistema Odorico{% endblock %}
 
+{% block page_header %}
+{% endblock %}
+
 {% block content %}
-    <h2 style="color: dodgerblue;">O que é ?</h2>
-    Odorico é um sistema de informação criado para auxiliar a gestão de Programas de Pós Graduação (PPG) no Brasil.<br/>
-    <br/>
-    O objetivo central é agilizar o preenchimento da Plataforma Sucupira, com o registro de docentes e discente e sua produção acadêmica através da importação automatizada dos dados registrados pelos pesquisadores na Plataforma Lattes. Dessa forma, o registro fica menos propenso a erros e estará integrado com o Qualis e com os projetos de pesquisa dos PPGs.
-    Ao centralizar toda a produção acadêmica do programa em uma única base de dados, o Odorico permitirá cruzamentos e relatórios gerenciais que auxiliem a coordenação do PPG a registrar os dados no Sucupira.
-    <br/>
-    Além disso, o Odorico procura oferecer alguns serviços para a comunidade acadêmica (alunos e professores) a citar:
-    <br/>
-    <div>
-    <ul>
-        <li>Lista de Periódicos atualizado por área</li>
-        <li>Mapa de Internacionalização: mostra os pesquisadores de um programa apresentaram trabalho pelo mundo</li>
-        <li>Relação de Bancas e Defesas agendadas</li>
-    </ul>
+<nav class="container mb-4 mb-md-0">
+  <div class="row my-md-5">
+    <div class="col-md-6 text-center text-md-start">
+      <img class="header-logo" src="{% static '/img/logo.png' %}" alt="Nome Odorico com um chapéu de palha no último O"/>
     </div>
-    <br/>
-    <small>Nota: O nome "Odorico" não tem nenhuma relação com o personagem de Dias Gomes que era o prefeito da cidade de Sucupira. Odorico é a sigla para <b>Organização Digital Ontológica e Repositório de Informação COlaborativa</b> de PPGs</small><br/>
-    <br/>
-    <h2 style="color: dodgerblue;">Quem desenvolve</h2>
-    O sistema foi concebido pela COEPE/IBICT e pelos alunos e professores do <a href="http://www.ppgci.ufrj.br/">PPGCI IBICT/UFRJ</a> e pelo <a href="http://www.irdx.com.br">INSTITUTO RDX DE ENSINO</a>.<br/>
-    <br/>
-    <h2 style="color: dodgerblue;">Política de Informação</h2>
-    O Sistema Odorico é regido por uma licença GPL 3.0, ou seja, é um software livre. Dessa forma, permite que qualquer pessoa possa baixar o seu código fonte, modificá-lo, distribuí-lo tendo a única restrição de que mantenha o software ou qualquer produto dele dentro da mesma licença.<br/>
-    <br/>
-    Acreditamos que o trabalho colaborativo que não involva as cercas da propriedade material é o verdadeiro motor para a inovação<br/>
-    <br/>
-    Dessa forma, convidamos a comunidade para que participe do desenvolvimento para que possamos gerar uma ferramenta porreta!<br/>
-    <br/>
+  </div>
+</nav>
+
+<main class="container">
+  <div class="content-text">
+    <h1>O que é?</h1>
+    <p>
+      Odorico é um sistema de informação criado para auxiliar a gestão de
+      Programas de Pós Graduação (PPG) no Brasil.
+    </p>
+    <p>
+      O objetivo central é agilizar o preenchimento da Plataforma Sucupira, com
+      o registro de docentes e discente e sua produção acadêmica através da
+      importação automatizada dos dados registrados pelos pesquisadores na
+      Plataforma Lattes. Dessa forma, o registro fica menos propenso a erros e
+      estará integrado com o Qualis e com os projetos de pesquisa dos PPGs. Ao
+      centralizar toda a produção acadêmica do programa em uma única base de
+      dados, o Odorico permitirá cruzamentos e relatórios gerenciais que
+      auxiliem a coordenação do PPG a registrar os dados no Sucupira.Além disso,
+      o Odorico procura oferecer alguns serviços para a comunidade acadêmica
+      (alunos e professores) a citar:
+    </p>
+
+    <div class="row g-3">
+      <div class="col-lg-3 col-md-6 mb-3 d-flex">
+        <div class="info-box flex-fill d-flex flex-column">
+          <p>Lista de Periódicos atualizado por área</p>
+          <a href="{{ periodicos_url }}">
+          <button type="button" class="btn btn-outline-primary">
+              Experimente
+          </button>
+          </a>
+        </div>
+      </div>
+      <!--div class="col-lg-3 col-md-6 mb-3 d-flex">
+        <div class="info-box flex-fill d-flex flex-column">
+          <p>Resumo individual do seu currículo Lattes</p>
+          <a href="/lattes-resumo"><button type="button" class="btn btn-outline-primary">Experimente</button></a>
+        </div>
+      </div-->
+      <div class="col-lg-3 col-md-6 mb-3 d-flex">
+        <div class="info-box flex-fill d-flex flex-column">
+          <p>
+            Acesso<br/>Discente</p>
+            <a href="{% url 'login' %}">
+              <button type="button" class="btn btn-outline-primary">Acessar</button>
+            </a>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-3 d-flex">
+        <div class="info-box flex-fill d-flex flex-column">
+          <p>
+            Acesso<br/>Docente</p>
+            <a href="{% url 'login' %}">
+              <button type="button" class="btn btn-outline-primary">Acessar</button>
+            </a>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-3 d-flex">
+        <div class="info-box flex-fill d-flex flex-column">
+          <p>
+            Relação de Bancas e Defesas agendadas
+          </p>
+            <a href="/agenda_defesas?header=1">
+              <button type="button" class="btn btn-outline-primary">Acessar</button>
+            </a>
+        </div>
+      </div>
+      {% for edital in editais_abertos %}
+      <div class="col-lg-3 col-md-6 mb-3 d-flex">
+        <div class="info-box flex-fill d-flex flex-column">
+          <p>
+            {{ edital.descricao }}
+          </p>
+          <a href="/nova_inscricao_edital/{{ edital.id }}"><button type="button" class="btn btn-outline-primary">Inscrição</button></a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <h1>Quem desenvolve?</h1>
+    <p>
+      O sistema foi concebido pela COEPI/IBICT, pelos alunos e professores do
+      PPGCI IBICT/UFRJ e pela IRDX Sistemas.
+    </p>
+
+    <h1>Política de Informação</h1>
+    <p>
+      O Sistema Odorico é regido por uma licença GPL 3.0, ou seja, é um software
+      livre. Dessa forma, permite que qualquer pessoa possa baixar o seu código
+      fonte, modificá-lo, distribuí-lo tendo a única restrição de que mantenha o
+      software ou qualquer produto dele dentro da mesma licença.
+    </p>
+    <p>
+      Segue o <a href="https://git.redemoara.ibict.br/ibict/coepi/odorico">link</a> para que
+      você possa acessar o código fonte.
+    </p>
+    <p>Logotipo foi criado por Márcia Azen</p>
+    <p>
+      Acreditamos que o trabalho colaborativo é o verdadeiro motor para a
+      inovação e convidamos a comunidade para que participe do desenvolvimento
+      para que possamos desenvolver uma ferramenta porreta!
+    </p>
+    <p><small>
+      Nota: O nome "Odorico" não tem nenhuma relação com o personagem de Dias
+      Gomes que era o prefeito da cidade de Sucupira. Odorico é a sigla para
+      Organização Digital Ontológica e Repositório de Informação Colaborativa de PPGs
+    </small></p>
+  </div>
+  <h6><span class="badge bg-secondary">Versão {{ version }}</span></h6>
+
+  <div class="my-3 container">
+    <div class="row justify-content-center text-center gy-3">
+      <div class="col-6 col-md-4 col-lg-2">
+          <a href="https://www.ibict.br/" target="_blank">
+             <img src="{% static '/img/ibict.png' %}" alt="IBICT" class="img-fluid" />
+          </a>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="https://www.ppgci.ufrj.br/" target="_blank">
+          <img src="{% static '/img/ppgci.png' %}" alt="PPGCI" class="img-fluid" />
+        </a>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="https://iesp.uerj.br/" target="_blank">
+          <img src="{% static '/img/iesp.png' %}" alt="IESP" class="img-fluid" />
+        </a>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="https://www.cnpq.br/" target="_blank">
+          <img src="{% static '/img/cnpq.png' %}" alt="CNPQ" />
+        </a>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="https://www.faperj.br/" target="_blank">
+          <img src="{% static '/img/faperj.png' %}" alt="FAPERJ" />
+        </a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!--Modal para informar msgs -->
+<div class="modal fade" id="messageModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        {% for message in messages %}
+          {% if message.level == 25 %}
+            <h5 class="modal-title text-success" id="messageModalLabel"><strong>Sucesso</strong></h5>
+          {% elif message.level == 40 %}
+            <h5 class="modal-title text-danger" id="messageModalLabel">Erro</h5>
+          {% else %}
+            <h5 class="modal-title text-warning" id="messageModalLabel">Atenção</h5>
+          {% endif %}
+        {% endfor %}
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {% for message in messages %}
+          <p>{{ message }}</p>
+        {% endfor %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if messages %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const modal = new bootstrap.Modal(document.getElementById('messageModal'));
+      modal.show();
+    });
+  </script>
+{% endif %}
+
 {% endblock %}

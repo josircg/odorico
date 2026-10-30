@@ -1,8 +1,12 @@
-{% extends "base_site.html" %}
+{% extends "base_header.html" %}
 
 {% block title %}Erro 500 - Odorico{% endblock %}
 
 {% block content %}
-<h2>Erro do Servidor</h2>
-Ocorreu um erro durante o processamento de sua requisição, por favor tente novamente mais tarde.
+<section id="panel">
+    <div class="container py-4 py-xl-5">
+        <h2>Erro do Servidor</h2>
+        <p>Ocorreu um erro durante o processamento de sua requisição, por favor tente novamente mais tarde.</p>
+    </div>
+</section>
 {% endblock %}

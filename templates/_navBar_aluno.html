@@ -1,0 +1,86 @@
+{% extends 'home.html' %}
+{% load static %}
+<!-- Descontinuado -->
+
+{% block content %}
+<nav class="navbar navbar-light navbar-expand-md py-3" style="background: #6F42C1 !important;">
+    <div class="container">
+        <div class="row w-100">
+            <!-- Coluna 1: Logo -->
+            <div class="col-4 d-flex align-items-center">
+                <a class="navbar-brand" href="/" style="background: url('{% static 'img/logo.png' %}') center / contain no-repeat; width: 180px; height: 60px;"></a>
+            </div>
+
+            <!-- Coluna 2: Vazia -->
+            <div class="col-2">
+
+            </div>
+
+            <!-- Coluna 3: Informações do usuário e Botão de sair (alinhado à direita) -->
+            <div class="col-6 d-flex justify-content-end align-items-center">
+                <div class="text-center user-info" style="color: rgb(228, 228, 228);">
+                    <strong style="margin-bottom: 0px; display: inline-block;">
+                        {{ user.first_name }}{% if matricula_numero %}<br/>Matrícula: {{ matricula_numero }}{% endif %}
+                    </strong>
+                </div>
+                {% if user.is_staff %}
+                <form action="/admin/" method="post" style="display: inline; margin-right: 10px;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn logout-btn">
+                        Admin
+                    </button>
+                </form>
+                {% endif %}
+                {% if user.is_authenticated %}
+                  <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                      {% csrf_token %}
+                      <button type="submit" class="btn logout-btn">
+                          Sair
+                      </button>
+                  </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+    {% block page_content %}
+    {% endblock %}
+
+<!--Modal para informar msgs -->
+<div class="modal fade" id="messageModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        {% for message in messages %}
+          {% if message.level == 25 %}
+            <h5 class="modal-title text-success" id="messageModalLabel"><strong>Sucesso</strong></h5>
+          {% elif message.level == 40 %}
+            <h5 class="modal-title text-danger" id="messageModalLabel">Erro</h5>
+          {% else %}
+            <h5 class="modal-title text-warning" id="messageModalLabel">Atenção</h5>
+          {% endif %}
+        {% endfor %}
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {% for message in messages %}
+          <p>{{ message }}</p>
+        {% endfor %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if messages %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const modal = new bootstrap.Modal(document.getElementById('messageModal'));
+      modal.show();
+    });
+  </script>
+{% endif %}
+
+{% endblock %}

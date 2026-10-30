@@ -53,7 +53,7 @@
                             {% endfor %}
                             {% for value in result.totalizadores %}
                                   <tr>
-                                    <td>Total de Professores: <b>{{ value.TOTAL_PESQUISADORES }}</b></td>
+                                    <td>Total de Pesquisadores: <b>{{ value.TOTAL_PESQUISADORES }}</b></td>
                                       <td><b>{{ value.A1 }}</b></td>
                                       <td><b>{{ value.A2 }}</b></td>
                                       <td><b>{{ value.A3 }}</b></td>
@@ -70,6 +70,7 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                <p>O total geral pode não ser a soma das linhas já que uma mesma produção pode pertencer a mais de um pesquisador</p>
                 <p class="paginator" style="text-align: right">Obra do Odorico</p>
             </div>
         </div>

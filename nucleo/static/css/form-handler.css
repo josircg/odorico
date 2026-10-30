@@ -1,0 +1,22 @@
+/**
+ * FORM SUBMIT HANDLER
+ * Estilos para feedback visual de envio de formulários.
+ */
+
+.submitting {
+  pointer-events: none !important;
+  opacity: 0.65 !important;
+  cursor: not-allowed !important;
+}
+
+button.submitting {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+button.submitting .spinner-border {
+  --bs-spinner-width: 1rem;
+  --bs-spinner-height: 1rem;
+  --bs-spinner-border-width: 0.15em;
+}

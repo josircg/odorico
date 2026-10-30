@@ -1,0 +1,32 @@
+{% extends "base_header.html" %}
+{% block title %}Orientações ativas{% endblock %}
+{% block content %}
+<div class="container d-flex flex-column py-4 py-xl-5">
+    <h1 style="text-align: center;margin-top: 15px;">Orientações ativas</h1>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr style="text-align: center;">
+                    <th style="border-top-width: 0;">Discente</th>
+                    <th style="border-top-width: 0;">Tipo</th>
+                    <th style="border-top-width: 0;">Entrada</th>
+                    <th style="border-top-width: 0;">Qualificação</th>
+                    <th style="border-top-width: 0;">Previsão de Defesa</th>
+                </tr>
+            </thead>    
+            <tbody>
+                {% for reg in result.dataset %}
+                <tr style="text-align: center;">
+                    <td style="border-top-width: 1px;">
+                        <a href="{{ reg.link }}" target="_blank" rel="noopener">{{ reg.aluno }}</a>
+                    </td>
+                    <td>{{ reg.tipo }}</td>
+                    <td>{{ reg.dtmatricula }}</td>
+                    <td>{{ reg.dtquali }}</td>
+                    <td>{{ reg.dtprevista }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

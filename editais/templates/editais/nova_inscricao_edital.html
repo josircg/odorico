@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block custom_styles %}
+<style>
+  div.form-group {
+    margin-top: 15px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-3 py-xl-5">
+    <div class="card mx-auto shadow-sm p-4" style="max-width: 60rem;">
+        <h2 class="text-center">{{ edital.descricao }}</h2>
+        <h3 class="text-center mb-3">Nova Inscrição</h3>
+        <p class="text-center text-muted">
+            {% if edital.url %}
+                Para ler o edital na íntegra, <a href="{{ edital.url }}" target="_blank">clique aqui</a>.
+            {% endif %}
+        </p>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {{ form|crispy }}
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary">Iniciar Inscrição</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

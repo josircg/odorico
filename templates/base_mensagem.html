@@ -1,0 +1,12 @@
+{% extends 'base_header.html' %}
+
+{% block content %}
+  <section id="panel">
+    <div class="container py-4 py-xl-5">
+      <div class="row">
+        {% block titulo %}<h1>{{ titulo }}</h1>{% endblock titulo %}
+        {% block texto %}<p>{{ texto | safe }}</p>{% endblock texto %}
+      </div>
+    </div>
+  </section>
+{% endblock %}

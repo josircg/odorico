@@ -1,0 +1,12 @@
+{% extends 'base_form.html' %}
+
+{% block bodyclass %}delete-confirmation {% endblock %}
+
+{% block form %}
+  <p>Tem certeza que deseja excluir "<b>{{ object }}</b>"?</p>
+  {% csrf_token %}
+  <div>
+    <input type="submit" value="Sim, tenho certeza">
+    <a href="{{ return_url }}" class="button cancel-link">Não, me leve de volta</a>
+  </div>
+{% endblock %}

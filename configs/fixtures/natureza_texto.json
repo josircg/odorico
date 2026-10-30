@@ -1,0 +1,103 @@
+[
+  {
+    "model": "nucleo.naturezatexto",
+    "pk": 1,
+    "fields": {
+      "descricao": "Obra autoral que envolve a sistematização de resultados de um programa de pesquisa conduzido pelo próprio autor, fruto de sua trajetória profissional"
+    }
+  },
+  {
+    "model": "nucleo.naturezatexto",
+    "pk": 2,
+    "fields": {
+      "descricao": "Coletâneas organizadas resultantes de pesquisas afins e grupos de pesquisas em rede"
+    }
+  },
+  {
+    "model": "nucleo.naturezatexto",
+    "pk": 3,
+    "fields": {
+      "descricao": "Relato e discussão de programas de pesquisas multicêntricas (envolvendo redes amplas de pesquisadores)"
+    }
+  },
+  {
+    "model": "nucleo.naturezatexto",
+    "pk": 4,
+    "fields": {
+      "descricao": "Relatos e discussões de projetos específicos de pesquisa"
+    }
+  },
+  {
+    "model": "nucleo.naturezatexto",
+    "pk": 5,
+    "fields": {
+      "descricao": "Apresentação e discussão de proposição teórica ou metodológica original"
+    }
+  },
+  {
+    "model": "nucleo.naturezatexto",
+    "pk": 6,
+    "fields": {
+      "descricao": "Texto de revisão ou de discussão da literatura de um tema ou uma área"
+    }
+  },
+  {
+    "model": "nucleo.naturezatexto",
+    "pk": 7,
+    "fields": {
+      "descricao": "Outra (especificar)"
+    }
+  },
+  {
+    "model": "nucleo.naturezatexto",
+    "pk": 8,
+    "fields": {
+      "descricao": "Obras traduzidas de outros idiomas que mantenham aderência às linhas de pesquisas e projetos dos docentes"
+    }
+  },
+  {
+    "model": "nucleo.naturezatexto",
+    "pk": 9,
+    "fields": {
+      "descricao": "Sistematização de conhecimentos disponíveis (livro texto para o ensino de graduação e pós-graduação), com claro embasamento em pesquisa científica e elevada qualidade didática"
+    }
+  },
+  {
+    "model": "nucleo.naturezatexto",
+    "pk": 10,
+    "fields": {
+      "descricao": "Sistematização conhecimentos disponíveis (livro texto para o ensino de graduação ou ensino médio), sem relação direta com pesquisa realizada mas com boa qualidade didática"
+    }
+  },
+  {
+    "model": "nucleo.naturezatexto",
+    "pk": 11,
+    "fields": {
+      "descricao": "Sistematização de conhecimentos disponíveis (livro texto para o ensino de graduação ou ensino médio), sem relação direta com pesquisa realizada e menor qualidade didática"
+    }
+  },
+  {
+    "model": "nucleo.naturezatexto",
+    "pk": 12,
+    "fields": {
+      "descricao": "Texto de difusão de conhecimentos da área"
+    }
+  },
+  {
+    "model": "nucleo.naturezatexto",
+    "pk": 13,
+    "fields": {
+      "descricao": "Relato de experiência(s) profissional(is) sem característica de investigação"
+    }
+  },
+  {
+    "model": "nucleo.naturezatexto",
+    "pk": 14,
+    "fields": {
+      "descricao": "Ensaios que expressam pontos de vista do autor sobre assuntos relevantes para a área"
+    }
+  }
+]
+
+
+

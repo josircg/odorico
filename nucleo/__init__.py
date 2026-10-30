@@ -1,6 +1,7 @@
 import hashlib
 import Levenshtein
 import datetime
+from django.utils.text import slugify
 
 
 def str_to_date(date_string):
@@ -15,14 +16,16 @@ def str_to_date(date_string):
 
 
 def clean_doi_url(doi):
-    parts = doi.lower().split('10.')
-    result = ''
-    for part in parts[1:]:
-        result = result + '10.' + part
-    if (',' in result) or ('/' not in result):
-        return None
-    else:
-        return result
+    if doi:
+        parts = doi.lower().split('10.')
+        result = ''
+        for part in parts[1:]:
+            result = result + '10.' + part
+        if (',' in result) or ('/' not in result):
+            return None
+        else:
+            return result
+    return None
 
 
 def doi_hashed(doi):
@@ -57,3 +60,26 @@ def similaridade(str1, str2, absoluta=False):
         if len(str1) >= 10 and len(str2) >= 10 and Levenshtein.distance(str1, str2) <= 5:
             return 1
     return 0
+
+
+def normalize_name(name:str, exc=('.', ',', '/', "'")):
+    if name:
+        result = ''
+        for c in name:
+            c = ' ' if c in exc else c
+            result += c
+        return ' '.join(result.split()).upper()
+    return None
+
+
+def similar_name(nome:str):
+    nome_normalizado = normalize_name(nome)
+    if nome_normalizado:
+        nomes = nome_normalizado.split(' ')
+        if len(nomes) < 2 or len(nomes[0]) == 1:
+            return slugify(nome_normalizado)
+        else:
+            return slugify(nomes[0] + ' ' + nomes[-1])
+    return None
+
+

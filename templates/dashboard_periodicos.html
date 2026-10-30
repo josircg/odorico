@@ -1,0 +1,87 @@
+{% extends 'base_site_sem_header.html' %}
+{% load static humanize %}
+{% block title %}Dashboard Periódicos{% endblock %}
+{% block extrastyle %}
+{{ block.super }}
+<link href="{% static 'admin/css/vendor/select2/select2.min.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/periodicos_dashboard.css' %}?v=9">
+{% endblock %}
+{% block content %}
+<div class="content-main">
+  <nav class="periodicos-navbar" aria-label="Navegação do dashboard de periódicos">
+    <div class="periodicos-navbar-inner">
+      <a class="periodicos-brand" href="{% url 'home' %}" title="Odorico"></a>
+      <h1 class="periodicos-title">Dashboard Periódicos</h1>
+      <div class="periodicos-actions">
+        <a title="Listagem" class="periodicos-action-btn" href="{% url 'periodicos' %}"><i class="fas fa-list" aria-hidden="true"></i>Listagem</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="dashboard-card" id="changelist">
+    <div class="result">
+      <form action="" method="GET" id="form_filters" class="dashboard-filter">
+        <div class="dashboard-filter-field">
+          <label for="area_cnpq_id">Área CNPQ</label>
+          <select class="filter select" name="area_cnpq" id="area_cnpq_id">
+            <option value="" selected="selected">Todos</option>
+            {% for area in result.areas_cnpq %}
+            <option value="{{ area.id }}">
+              {{ area.nome }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="dashboard-filter-field">
+          <label for="assunto_id">Área ASJC / CrossRef</label>
+          <select class="filter select" name="area" id="assunto_id">
+            <option value="" selected="selected">Todos</option>
+            {% for assunto in result.assuntos %}
+            <option value="{{ assunto.id }}" {% if assunto.id == result.assunto_select %} selected="selected" {% endif %}>
+              {{ assunto.descricao }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="dashboard-filter-field">
+          <label for="topico_id">
+            Tópicos (OALEXF)
+            <span class="dashboard-help-btn dashboard-topic-tooltip" aria-label="Ajuda sobre o filtro de Tópicos">
+              <i class="fas fa-question-circle" aria-hidden="true"></i>
+              <span class="dashboard-topic-tooltip__content">
+                <p>Digite para buscar tópicos do OpenAlex e selecione um item para recortar o dashboard.</p>
+                <p>Esse filtro usa somente classificações do OpenAlex Fields e pode ser combinado com Área CNPQ e ASJC.</p>
+              </span>
+            </span>
+          </label>
+          <select class="filter select" name="topico" id="topico_id">
+            <option value=""></option>
+          </select>
+        </div>
+        <div class="dashboard-filter-actions">
+          <button type="button" id="clear_dashboard_filters" class="dashboard-clear-filters-btn">
+            Limpar filtros
+          </button>
+        </div>
+      </form>
+
+      <div class="container" id="counters">
+        <div class="box-large">
+          <div id="qualis-dash" class="dash box"></div>
+          <div id="pais-dash" class="dash box"></div>
+        </div>
+      </div>
+
+      <p class="dashboard-footer">Obra do Odorico</p>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  window.url_pesquisa = "{% url 'dashboard_periodicos_filter' %}"
+  window.url_topicos = "{% url 'dashboard_periodicos_topicos' %}"
+</script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="{% static 'admin/js/vendor/select2/select2.full.min.js' %}"></script>
+<script src="{% static 'js/plotly-2.31.1.min.js' %}"></script>
+<script src="{% static 'js/dashboard_periodicos.js' %}?v=4"></script>
+{% endblock %}

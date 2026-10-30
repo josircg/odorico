@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% load crispy_forms_tags %}
+{% block content %}
+        <h2>Formulário de presença para o {{ curso.tipo.descricao }} {{ curso.nome }}</h2>
+        <form method="post" class="w-100">
+            {% csrf_token %}
+            {{ form_verificar_email.non_field_errors }}
+
+            {% for field in confirma_presenca_form %}
+            <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                {{ field }}
+                {{ field.errors }}
+            </div>
+            {% endfor %}
+            {{ render_datalist|safe }}
+            <button type="submit" class="btn btn-primary mt-3">Enviar</button>
+        </form>
+{% endblock %}

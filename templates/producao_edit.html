@@ -11,14 +11,14 @@
                     {% csrf_token %}
                     <fildset class="module aligned">
                         <div class="form-row">
-                            <label class="" for="id_projetos" style="display: inline-block">Projeto:</label>
+                            <label class="" for="id_projetos" style="position: relative; height: 60px">Projeto:</label>
                             <select name="projeto" id="id_projetos" class="filter" style="display:inline-block; width: 750px">
                                {% for projeto in result.projetos %}
                                        <option value="{{ projeto.projeto.id }}" {% if result.projeto_select == projeto.projeto.id %} selected="selected" {% endif %}>{{ projeto.projeto.nome }}</option>
                                {% endfor %}
                             </select>
                             <input id="sem-projeto" {% if result.producao.sem_projeto %}checked{% endif %} type="checkbox" style="display: inline-block; margin-left: 10px"/>
-                            <label for="sem-projeto" style="display: inline">Produção externa ao programa.</label>
+                            <label for="sem-projeto" style="position: relative; height: 60px">Produção externa ao programa.</label>
                             <input type="hidden" name="sem_projeto" id="sem-projeto-text"/>
                         </div>
                         <div class="form-row">

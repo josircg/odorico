@@ -1,0 +1,266 @@
+.inscricao-disciplina-page {
+  --odorico-cinza-card: #e9edf2;
+  --odorico-cinza-texto: #2f3a44;
+  --odorico-azul-claro: #b8d4ff;
+  --odorico-verde: #4df78b;
+}
+
+.inscricao-disciplina-page .card-inscricao {
+  border: 1px solid #d9e0e7;
+  border-radius: 18px;
+  box-shadow: 0 10px 28px rgba(27, 39, 51, 0.08);
+  background: #ffffff;
+}
+
+.inscricao-disciplina-page .section-title {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.inscricao-disciplina-page .disc-box {
+  border: 0;
+  border-radius: 16px;
+  padding: 14px;
+  background: #ffffff00;
+}
+
+.inscricao-disciplina-page .disc-card {
+  border: 1.5px solid #d0d7de;
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: #ffffff;
+  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+}
+
+.inscricao-disciplina-page .disc-card:hover {
+  border-color: #9db6d1;
+  box-shadow: 0 8px 18px rgba(27, 39, 51, 0.08);
+  transform: translateY(-1px);
+}
+
+.inscricao-disciplina-page .disc-top {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.inscricao-disciplina-page .disc-check {
+  margin-top: 3px;
+}
+
+.inscricao-disciplina-page .disc-title {
+    font-weight: 600;
+    line-height: 1.3;
+    font-size: 0.95rem;
+}
+
+.inscricao-disciplina-page .disc-meta,
+.inscricao-disciplina-page .turma-info {
+  font-size: 0.92rem;
+  color: #5b6770;
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+.inscricao-disciplina-page .turma-info strong {
+  font-weight: 700;
+}
+
+.inscricao-disciplina-page .disc-actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.inscricao-disciplina-page .disc-list {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.inscricao-disciplina-page .disc-card-row {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  border-radius: 14px;
+  border: 1px solid #4b2a89;
+  box-shadow: 0 8px 18px rgba(27, 39, 51, 0.08);
+  background: var(--odorico-cinza-card);
+  overflow: hidden;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.inscricao-disciplina-page .disc-card-row:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(27, 39, 51, 0.12);
+}
+
+.inscricao-disciplina-page .disc-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #4b2a89;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.inscricao-disciplina-page .disc-card-header-inscrita {
+  justify-content: space-between;
+  background: #07d36a;
+}
+
+.inscricao-disciplina-page .disc-badge-inscrito {
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.inscricao-disciplina-page .disc-badge-inscrever {
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.inscricao-disciplina-page .disc-card-row.is-checked .disc-badge-inscrever {
+  background: #b7f0cf;
+  border-color: #8fe3b1;
+  color: #1f8f4a;
+}
+
+.inscricao-disciplina-page .disc-card-row-inscrita {
+  border-color: #8fe3b1;
+}
+
+.inscricao-disciplina-page .disc-cancel-form {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inscricao-disciplina-page .disc-cancel-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.inscricao-disciplina-page .disc-cancel-btn {
+  display: inline-flex;
+  align-items: center;
+  border: 0;
+  background: #ff4d4f;
+  color: #ffffff;
+  padding: 6px;
+  border-radius: 6px;
+}
+
+.inscricao-disciplina-page .disc-cancel-btn:hover {
+  background: #e54849;
+}
+
+.inscricao-disciplina-page .disc-cancel-btn svg {
+  display: block;
+}
+
+.inscricao-disciplina-page .disc-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.inscricao-disciplina-page .disc-switch-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.inscricao-disciplina-page .disc-switch-ui {
+  width: 42px;
+  height: 24px;
+  background: var(--odorico-azul-claro);
+  border-radius: 999px;
+  position: relative;
+  transition: background 160ms ease;
+}
+
+.inscricao-disciplina-page .disc-switch-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: #d7e7ff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 700;
+  color: #2f6fd6;
+  transition: transform 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.inscricao-disciplina-page .disc-switch-icon-on {
+  display: none;
+}
+
+.inscricao-disciplina-page .disc-switch-input:checked + .disc-switch-ui {
+  background: var(--odorico-verde);
+}
+
+.inscricao-disciplina-page .disc-switch-input:checked + .disc-switch-ui .disc-switch-knob {
+  transform: translateX(18px);
+  background: #c4f5d7;
+  color: #1f8f4a;
+}
+
+.inscricao-disciplina-page .disc-switch-input:checked + .disc-switch-ui .disc-switch-icon-on {
+  display: inline;
+}
+
+.inscricao-disciplina-page .disc-switch-input:checked + .disc-switch-ui .disc-switch-icon-off {
+  display: none;
+}
+
+.inscricao-disciplina-page .disc-card-body {
+  padding: 14px 16px;
+  color: var(--odorico-cinza-texto);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.inscricao-disciplina-page .disc-card-body small {
+  font-weight: 500;
+  color: #56606a;
+}
+
+.inscricao-disciplina-page .disc-icon {
+  font-size: 0.85rem;
+  margin-right: 4px;
+  color: #5b6770;
+  vertical-align: text-bottom;
+}
+
+.inscricao-disciplina-page .disc-title-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+@media (max-width: 576px) {
+  .inscricao-disciplina-page .disc-list {
+    grid-template-columns: 1fr;
+  }
+  .inscricao-disciplina-page .disc-card-body {
+    padding: 12px 12px;
+    font-size: 0.98rem;
+  }
+}

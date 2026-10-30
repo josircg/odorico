@@ -17,48 +17,59 @@
               <a href="{{ acao.endereco }}" class="{% if acao.tag %}buttonlink-success{% else %}buttonlink{% endif %}">{{ acao.nome }}</a>
             </div>
           {% endfor %}
+          {% if status_atual %}
+            <div class="center">
+              <p><b>{{ status_atual }}</b></p>
+            </div>
+          {% endif %}
         </div>
       </div>
 
       <div class="changelist-form-container">
         <div class="module" id="changelist">
-          <div class="results">
+          {% if page_obj.paginator.count > 0 %}
+            <div class="results">
+              <table id="result_list">
+                  <thead>
+                      <tr>
+                        <th scope="col">
+                          <div class="text">Título</div>
+                        </th>
+                        <th scope="col">
+                          <div class="text">Tipo de Produção</div>
+                        </th>
+                        <th scope="col">
+                          <div class="text">Validação</div>
+                        </th>
+                        <th scope="col">
+                          <div class="text">Ação</div>
+                        </th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    {% for producao in page_obj %}
+                      <tr class="{% cycle 'row1' 'row2' %}">
+                        <td>{{ producao.titulo }}</td>
+                        <td>{{ producao.tipo }}</td>
+                        <td>{{ producao.validada }}</td>
+                        <td>
+                          <div class="text">
+                            <a href="{% url 'editar_producao' hash producao.pk %}{% if apr %}?apr=1{% endif %}"
+                               class="{% if apr %}viewlink{% else %}changelink{% endif %}">
+                              <span class="icon">{% if apr %}Visualisar{% else %}Editar{% endif %}</span>
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+              </table>
+              {% include 'partials/pagination.html' %}
 
-            <table id="result_list">
-                <thead>
-                    <tr>
-                      <th scope="col">
-                        <div class="text">Título</div>
-                      </th>
-                      <th scope="col">
-                        <div class="text">Tipo de Produção</div>
-                      </th>
-                      <th scope="col">
-                        <div class="text">Ação</div>
-                      </th>
-                    </tr>
-                </thead>
-                <tbody>
-                  {% for producao in page_obj %}
-                    <tr class="{% cycle 'row1' 'row2' %}">
-                      <td>{{ producao.titulo }}</td>
-                      <td>{{ producao.tipo }}</td>
-                      <td>
-                        <div class="text">
-                          <a href="{% url 'editar_producao' hash producao.pk %}{% if apr %}?apr=1{% endif %}"
-                             class="{% if apr %}viewlink{% else %}changelink{% endif %}">
-                            <span class="icon">{% if apr %}Visualisar{% else %}Editar{% endif %}</span>
-                          </a>
-                        </div>
-                      </td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-            </table>
-
-            {% include 'partials/pagination.html' %}
-
-          </div>
+            </div>
+          {% else %}
+            <p>Nenhuma produção registrada</p>
+          {% endif %}
         </div>
       </div>
     </div>

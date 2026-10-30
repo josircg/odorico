@@ -1,0 +1,39 @@
+{% extends "base_header.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container d-flex justify-content-center mt-5">
+  <div style="max-width: 40rem; width: 100%;">
+    <h2 class="text-center mb-4">Solicitação de Homologação<br>{{ titulo_formulario }}</h2>
+    <!-- Renderiza o formulário com crispy-forms -->
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {% crispy form %}
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      let modalidadeField = document.getElementById("id_modalidade"); // Campo Modalidade
+      let justificativaField = document.getElementById("id_justificativa"); // Campo Justificativa
+      let justificativaContainer = justificativaField.closest('.form-group'); // Pega a div inteira
+
+      function toggleJustificativa() {
+          if (modalidadeField.value === "H" || modalidadeField.value === "R") {
+              justificativaContainer.style.display = "block"; // Exibe o campo + label
+              justificativaField.setAttribute("required", "required");
+          } else {
+              justificativaContainer.style.display = "none"; // Oculta o campo + label
+              justificativaField.removeAttribute("required");
+              justificativaField.value = "";
+          }
+      }
+
+      toggleJustificativa();
+      modalidadeField.addEventListener("change", toggleJustificativa);
+  });
+  </script>
+
+
+{% endblock %}

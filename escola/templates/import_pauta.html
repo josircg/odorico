@@ -1,0 +1,31 @@
+{% extends "base_form.html" %}
+
+{% block title %}Importação de Pautas de um Curso ou de Listas de Interesse{% endblock %}
+
+{% block content %}
+    {% if total_registros %}
+    <h2>Resumo da Importação:</h2>
+    <p>Total de Registros Lidos: {{ total_registros }}</p>
+    <p>Novos Registros encontrados: {{ novos_discentes }}</p>
+
+    {% if erros %}
+      <h3>Erros:</h3>
+      <ul>
+        {% for erro in erros %}
+          <li>{{ erro }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    <div class="form-row submit-row">
+        <div class="col"><a href="/admin/" class="buttonlink">Voltar</a></div>
+    </div>
+  {% else %}
+  <h2>Importação de Pauta de um Curso</h2>
+  <p>Escolha o tipo de importação, o curso e/ou a lista de interesse</p>
+  <p>Caso queira importar uma pauta de presença, selecione o curso e o arquivo XLSX de seu computador e clique no botão Enviar</p>
+  <p>Você também pode importar contatos para uma lista de interesse para emitir certificados.</p>
+  <p>Caso seja uma lista de palestrantes, basta selecionar o curso (não é necessário selecionar um arquivo)</p>
+  <p><b>ATENÇÃO:</b>A planilha não deve conter cabeçalho e deve ter apenas 2 colunas nome e email</p>
+  {% endif %}
+  {{ block.super }}
+{% endblock %}

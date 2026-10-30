@@ -41,7 +41,7 @@
     border-bottom: 1px solid var(--hairline-color);
 }
 
-.form-row a:link, .form-row a:visited {
+.form-row a:link, .form-row a:visited .deletelink {
     text-decoration: underline;
 }
 
@@ -102,11 +102,23 @@ label.label-issn {
 }
 
 .aligned label {
-    width: 200px !important;
+    width: 220px !important;
+}
+
+.vLargeFieldBox label {
+    width: 500px !important;
 }
 
 .col {
     float: left;
+}
+
+.center {
+  float: left;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 36px;
 }
 
 label {
@@ -174,6 +186,11 @@ th {
 
 .aligned p.file-upload {
     margin: 30px 0px 0px;
+}
+
+.submit-row p.deletelink-box {
+	float: right;
+	margin: 0;
 }
 
 /* django select2 input */

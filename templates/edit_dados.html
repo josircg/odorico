@@ -1,0 +1,11 @@
+{% extends "base_header.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container d-flex justify-content-center mt-5">
+  <div style="max-width: 40rem; width: 100%;">
+    <h2 class="text-center mb-4">Dados Cadastrais</h2>
+    {% crispy form %}
+  </div>
+</div>
+{% endblock %}

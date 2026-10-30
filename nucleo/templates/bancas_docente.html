@@ -1,0 +1,37 @@
+{% extends "base_header.html" %}
+
+{% block content %}
+<div class="container py-4 py-xl-5">
+    <div class="card mx-auto shadow-sm p-4" style="max-width: 60rem;">
+        {% if bancas %}
+            <p class="text-center text-muted">
+                Listagem com as suas próximas bancas
+            </p>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">Discente</th>
+                            <th scope="col" class="text-center">Detalhes</th>
+                            <th scope="col" class="text-center">Data</th>
+                            <th scope="col" class="text-center">Local</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for banca in bancas %}
+                        <tr>
+                            <td>{{ banca.discente }}</td>
+                            <td>{{ banca.tipo }}</td>
+                            <td>{{ banca.data }}</td>
+                            <td>{{ banca.local }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <h5 class="modal-title">Nenhuma banca encontrada</h5>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base_form.html" %}
+
+{% block title %}Importação de Contatos de uma lista{% endblock %}
+
+{% block content %}
+    {% if total_registros %}
+    <h2>Resumo da Importação:</h2>
+    <p>Total de Registros Incluídos: {{ total_registros }}</p>
+    <p>Novos Discentes Adicionados: {{ novos_discentes }}</p>
+
+    {% if erros %}
+      <h3>Erros:</h3>
+      <ul>
+        {% for erro in erros %}
+          <li>{{ erro }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    <div class="form-row submit-row">
+        <div class="col"><a href="/admin/" class="buttonlink">Voltar</a></div>
+    </div>
+  {% else %}
+  <h2>Importação de Pauta de um Curso</h2>
+  <p>Envie um arquivo XLSX de seu computador e clique no botão Enviar</p>
+  <p><b>ATENÇÃO:</b>A planilha não deve conter cabeçalho e deve ter apenas 2 colunas nome e email</p>
+  {% endif %}
+  {{ block.super }}
+{% endblock %}

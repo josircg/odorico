@@ -3,46 +3,47 @@
 {% block content %}
     <div class="content-main">
         <div>
+            <p>{{ mensagem }}</p>
             <fieldset class="module aligned">
             {% for reg in result.valores %}
-                <div class="dataset">
+                <div class="dataset2">
                     <div class="linha">
-                        <label>Título:</label>
+                        <div style="width: 100px; float: left;"><b>Aluno:</b></div>
+                        <div class="col"><b>{{ reg.aluno }}</b></div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="linha">
+                        <div style="width: 100px; float: left;">Título:</div>
                         <div class="col">{{ reg.titulo }}</div>
                         <div class="clear"></div>
                     </div>
                     <div class="linha">
-                        <label>Aluno:</label>
-                        <div class="col">{{ reg.aluno }}</div>
-                        <div class="clear"></div>
-                    </div>
-                    <div class="linha">
-                        <label>Tipo:</label>
+                        <div style="width: 100px; float: left;">Tipo:</div>
                         <div class="col">{{ reg.tipo }}</div>
                         <div class="clear"></div>
                     </div>
                     <div class="linha">
-                        <label>Orientador(a):</label>
+                        <div style="width: 100px; float: left;">Orientador(a):</div>
                         <div class="col">{{ reg.orientador }}</div>
                         <div class="clear"></div>
                     </div>
                     <div class="linha">
-                        <label>Data:</label>
+                        <div style="width: 100px; float: left;">Data:</div>
                         <div class="col">{{ reg.data }}</div>
                         <div class="clear"></div>
                     </div>
                     <div class="linha">
-                        <label>Local:</label>
+                        <div style="width: 100px; float: left;">Local:</div>
                         <div class="col">{{ reg.local }}</div>
                         <div class="clear"></div>
                     </div>
+                    <hr>
                 </div>
             {% endfor %}
             </fieldset>
         </div>
     </div>
     <div class="footer" style="width: 100%">
-        <p style="float: right; margin: 0"><small>Confabulado por Odorico&nbsp;&nbsp;</small></p>
         <a href="/defesas_realizadas"><input type="button" style="float: left; padding: 0 !important; height: 30px; width: 120px; font-size: 10px; text-align: center;" class="default" value="Defesas realizadas"></a>
     </div>
 

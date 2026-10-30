@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% load crispy_forms_tags %}
+{% block title %}Módulo{% endblock %}
+{% block content %}
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              <h2>{{ modulo.nome }}</h2>
+              <p>{{ modulo.descricao | safe }}</p>
+            </div>
+          </div>
+          <div class="grid">
+            {% for curso in cursos %}
+            <div class="curso">
+              <h5 class="titulo">{{ curso.nome }}</h5>
+              <p>{{ curso.docentes }}</p>
+              {% if curso.status_matricula %}
+                  <p>{{ curso.status_matricula }}</p>
+              {% else %}
+                  <a href="{{ curso.url }}" class="imagem">Inscreva-se</a>
+              {% endif %}
+            </div>
+            {% endfor %}  
+          </div>  
+        </div>
+      </section>
+    </main>
+{% endblock %}
+
+{% block footer %}{% endblock %}

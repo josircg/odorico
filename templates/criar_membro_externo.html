@@ -1,0 +1,240 @@
+{% load static crispy_forms_filters %}
+
+{{ form.media }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.4/bootbox.min.js"></script>
+
+<div class="modal fade" data-bs-backdrop="static" id="criarMembroExternoModal" tabindex="-1"
+     aria-labelledby="criarMembroExternoLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="criarMembroExternoLabel">Adicionar Membro Externo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="{% url 'vincular_membro_externo' %}" id="criarMembroExternoForm">
+          {% csrf_token %}
+          {{ form.pesquisador_id }}
+          {{ form.matricula_evento_id }}
+
+          <!-- ETAPA 1: Identificação -->
+          <div data-step="1">
+            {{ form.email|as_crispy_field }}
+            {{ form.estrangeiro|as_crispy_field }}
+
+            <div data-campo="cnpq">
+              {{ form.id_cnpq|as_crispy_field }}
+            </div>
+            <div class="d-none" data-campo="orcid">
+              {{ form.orcid|as_crispy_field }}
+            </div>
+            <div class="d-none" data-campo="nome">
+              {{ form.nome|as_crispy_field }}
+            </div>
+
+            <div class="alert alert-danger d-none" role="alert" data-erro="identificacao"></div>
+          </div>
+
+          <!-- ETAPA 3: Instituição -->
+          <div data-step="3" class="d-none">
+            <p class="text-muted">
+              Pesquisador identificado: <strong data-pesquisador-nome></strong>
+            </p>
+
+            <div data-campo="instituicao-select">
+              {{ form.instituicao|as_crispy_field }}
+            </div>
+
+            {{ form.instituicao_fora_lista|as_crispy_field }}
+
+            <div class="d-none" data-campo="instituicao-nova">
+              {{ form.instituicao_nome|as_crispy_field }}
+              {{ form.instituicao_sigla|as_crispy_field }}
+            </div>
+
+            <div class="alert alert-danger d-none" role="alert" data-erro="vinculo"></div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnIdentificarMembro">Continuar</button>
+        <button type="button" class="btn btn-primary d-none" id="btnSalvarMembro">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    (function () {
+        const $modal = $('#criarMembroExternoModal');
+        const form = document.getElementById('criarMembroExternoForm');
+
+        function setLoading($btn, loading) {
+            if (loading) {
+                $btn.addClass('submitting').prop('disabled', true);
+                if (!$btn.find('.spinner-border').length) {
+                    $btn.prepend('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>');
+                }
+            } else {
+                $btn.removeClass('submitting').prop('disabled', false);
+                $btn.find('.spinner-border').remove();
+            }
+        }
+        // Limpa os erros inline de uma etapa (campos do escopo + alerta geral dela)
+        function clearErrors($scope, $alert) {
+            $scope.find('.is-invalid').removeClass('is-invalid');
+            $scope.find('.invalid-feedback.js-erro').remove();
+            $alert.addClass('d-none').text('');
+        }
+        // Aplica os erros vindos na resposta: {campo: [{message, code}]}
+        // Campos são localizados em todo o form; __all__/desconhecidos vão para $alert.
+        function applyErrors(errors, $alert) {
+            Object.keys(errors || {}).forEach(function (campo) {
+                const texto = (errors[campo] || []).map(function (e) {
+                    return e.message;
+                }).join(' ');
+                const $input = $('#id_' + campo);
+                if (campo === '__all__' || !$input.length) {
+                    $alert.text(($alert.text() + ' ' + texto).trim()).removeClass('d-none');
+                    return;
+                }
+                $input.addClass('is-invalid');
+                $('<div class="invalid-feedback js-erro d-block"></div>').text(texto).insertAfter($input);
+            });
+        }
+        // Restaura o modal para a etapa 1, pronto para um novo cadastro
+        function resetWizard() {
+            form.reset();
+            $('#id_pesquisador_id').val('');
+            $('[data-pesquisador-nome]').text('');
+            const $inst = $('#id_instituicao');
+            if ($inst.hasClass('select2-hidden-accessible')) {
+                $inst.select2('destroy');
+            }
+            $inst.empty();
+            clearErrors($('[data-step="1"]'), $('[data-erro="identificacao"]'));
+            clearErrors($('[data-step="3"]'), $('[data-erro="vinculo"]'));
+            toggleEstrangeiro();
+            $('[data-campo="instituicao-nova"]').addClass('d-none');
+            $('[data-campo="instituicao-select"]').removeClass('d-none');
+            $('[data-step="3"]').addClass('d-none');
+            $('[data-step="1"]').removeClass('d-none');
+            $('#btnSalvarMembro').addClass('d-none');
+            $('#btnIdentificarMembro').removeClass('d-none');
+        }
+        // addEventListener nativo: eventos do modal do Bootstrap 5 não são jQuery
+        $modal[0].addEventListener('hidden.bs.modal', resetWizard);
+        // Etapa 1: alterna entre os caminhos CNPq (padrão) e Estrangeiro (ORCID + Nome)
+        function toggleEstrangeiro() {
+            const estrangeiro = $('#id_estrangeiro').is(':checked');
+            $('[data-campo="cnpq"]').toggleClass('d-none', estrangeiro);
+            $('[data-campo="orcid"]').toggleClass('d-none', !estrangeiro);
+            $('[data-campo="nome"]').toggleClass('d-none', !estrangeiro);
+            if (estrangeiro) {
+                $('#id_id_cnpq').val('');
+            } else {
+                $('#id_orcid').val('');
+                $('#id_nome').val('');
+            }
+        }
+
+        $('#id_estrangeiro').on('change', toggleEstrangeiro);
+        // Etapa 3: alterna entre instituição da lista e cadastro de nova instituição
+        $('#id_instituicao_fora_lista').on('change', function () {
+            const fora = $(this).is(':checked');
+            $('[data-campo="instituicao-nova"]').toggleClass('d-none', !fora);
+            $('[data-campo="instituicao-select"]').toggleClass('d-none', fora);
+        });
+        // Etapa 2: identificação/criação do pesquisador via AJAX
+        $('#btnIdentificarMembro').on('click', function () {
+            const $btn = $(this);
+            clearErrors($('[data-step="1"]'), $('[data-erro="identificacao"]'));
+
+            const fd = new FormData();
+            fd.append('email', $('#id_email').val());
+            fd.append('estrangeiro', $('#id_estrangeiro').is(':checked') ? 'true' : 'false');
+            fd.append('id_cnpq', $('#id_id_cnpq').val());
+            fd.append('orcid', $('#id_orcid').val());
+            fd.append('nome', $('#id_nome').val());
+
+            const csrftoken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            setLoading($btn, true);
+            fetch("{% url 'identificar_membro_externo' %}", {
+                method: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                body: fd
+            }).then(async function (resp) {
+                const data = await resp.json().catch(function () {
+                    return {};
+                });
+                if (!resp.ok) {
+                    applyErrors(data, $('[data-erro="identificacao"]'));
+                    return;
+                }
+
+                $('#id_pesquisador_id').val(data.pesquisador_id);
+                $('[data-pesquisador-nome]').text(data.nome || '');
+                // Revela a Etapa 3 antes de (re)inicializar o select2 (garante a renderização)
+                $('[data-step="1"]').addClass('d-none');
+                $('[data-step="3"]').removeClass('d-none');
+                $btn.addClass('d-none');
+                $('#btnSalvarMembro').removeClass('d-none');
+                // Solução para abrir o dropdown do select2 corretamente dentro do modal
+                const $inst = $('#id_instituicao');
+                if ($inst.hasClass('select2-hidden-accessible')) {
+                    $inst.select2('destroy');
+                }
+                $inst.empty();
+                $inst.djangoSelect2({dropdownParent: $modal});
+
+                if (data.instituicao) {
+                    $inst.append(new Option(data.instituicao.nome, data.instituicao.id, true, true))
+                        .trigger('change');
+                }
+            }).catch(function () {
+                bootbox.alert('Erro de comunicação. Tente novamente.');
+            }).finally(function () {
+                setLoading($btn, false);
+            });
+        });
+        // Etapa 4: submit final via AJAX
+        $('#btnSalvarMembro').on('click', function () {
+            const $btn = $(this);
+            clearErrors($('[data-step="3"]'), $('[data-erro="vinculo"]'));
+            const csrftoken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            setLoading($btn, true);
+            fetch("{% url 'vincular_membro_externo' %}", {
+                method: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                body: new FormData(form)
+            }).then(async function (resp) {
+                const data = await resp.json().catch(function () {
+                    return {};
+                });
+                if (!resp.ok) {
+                    applyErrors(data, $('[data-erro="vinculo"]'));
+                    return;
+                }
+                // Mostra o bootbox SÓ depois do nosso modal fechar por completo.
+                // Sobrepor hide() + bootbox corrompia a reabertura (2º cadastro).
+                $modal[0].addEventListener('hidden.bs.modal', function () {
+                    bootbox.alert({
+                        message: 'Membro cadastrado com sucesso! Busque-o pelo nome no campo de membro externo da banca.',
+                        callback: function () {
+                            // Remove o backdrop órfão neste ambiente
+                            $('.modal-backdrop').remove();
+                        }
+                    });
+                }, { once: true });
+                bootstrap.Modal.getInstance($modal[0]).hide();
+            }).catch(function () {
+                bootbox.alert('Erro de comunicação. Tente novamente.');
+            }).finally(function () {
+                setLoading($btn, false);
+            });
+        });
+    })();
+</script>

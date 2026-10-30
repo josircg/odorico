@@ -1,0 +1,37 @@
+[
+  {
+    "model": "escola.tipocurso",
+    "pk": 1,
+    "fields": {
+      "descricao": "Especialização"
+    }
+  },
+  {
+    "model": "escola.tipocurso",
+    "pk": 2,
+    "fields": {
+      "descricao": "Mestrado"
+    }
+  },
+  {
+    "model": "escola.tipocurso",
+    "pk": 3,
+    "fields": {
+      "descricao": "Doutorado"
+    }
+  },
+  {
+    "model": "escola.tipocurso",
+    "pk": 4,
+    "fields": {
+      "descricao": "Oficina"
+    }
+  },
+  {
+    "model": "escola.tipocurso",
+    "pk": 5,
+    "fields": {
+      "descricao": "Curso Livre"
+    }
+  }
+]

@@ -15,3 +15,15 @@ input#mes, input#ano, input#buscar, select#mes{
     display: inline-block;
     margin-right: 10px;
 }
+
+.dataset2 hr{
+    clear: both;
+    color: #555555;
+    background-color: #555555;
+    height: 1px;
+    border: none;
+    margin: 15px 0;
+    padding: 0;
+    font-size: 1px;
+    line-height: 1px;
+}

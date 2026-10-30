@@ -1,0 +1,28 @@
+{% extends "base_form.html" %}
+
+{% block title %}Importação das Sessões de um Evento{% endblock %}
+
+{% block content %}
+    {% if total_registros %}
+    <h2>Resumo da Importação:</h2>
+    <p>Total de Registros Lidos: {{ total_registros }}</p>
+    <p>Novos Registros encontrados: {{ novos_discentes }}</p>
+
+    {% if erros %}
+      <h3>Erros:</h3>
+      <ul>
+        {% for erro in erros %}
+          <li>{{ erro }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    <div class="form-row submit-row">
+        <div class="col"><a href="/admin/escola/modulotrilha/" class="buttonlink">Voltar</a></div>
+    </div>
+  {% else %}
+  <h2>Importação de Sessões</h2>
+  <p>Escolha o Evento e o arquivo XLSX</p>
+  <p><b>ATENÇÃO:</b>A planilha não deve conter cabeçalho e deve ter apenas 2 colunas nome e email</p>
+  {% endif %}
+  {{ block.super }}
+{% endblock %}

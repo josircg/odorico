@@ -1,0 +1,232 @@
+{% extends 'base_site.html' %}
+{% load static humanize l10n %}
+{% block title %}Registro de Presença Física{% endblock %}
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/tingle.min.css' %}">
+
+<style>
+    th.sortable {
+        padding: 0 !important;
+    }
+
+    .align-right {
+        text-align: right;
+    }
+
+    h1 {
+        margin: 0 !important;
+    }
+
+    .icon-button {
+        margin-top: 3px;
+        margin-left: 8px;
+        cursor: pointer;
+        transition: all .2s;
+    }
+
+    .icon-button:hover {
+        transform: scale(1.2);
+    }
+
+    .cabecalho {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    /* Styles for the tooltip */
+    .tooltip {
+        position: relative;
+        display: inline-block;
+    }
+
+    .tooltiptext {
+        display: none;
+        position: absolute;
+        visibility: hidden;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 5px;
+        background-color: #333;
+        color: #fff;
+        border-radius: 4px;
+    }
+
+    /* Show the tooltip on hover */
+    .tooltip:hover .tooltiptext {
+        display: block;
+        visibility: visible;
+    }
+
+    .flex-header {
+        display: flex;
+        align-items: center;
+    }
+
+    .flex-header a {
+        padding: 8px 5px !important;
+    }
+
+    .header-center {
+        justify-content: center;
+    }
+
+    .header-right {
+        justify-content: flex-end;
+    }
+
+    .changelist-filter {
+        display: flex;
+        gap: 20px;
+        max-width: 100%;
+    }
+
+    @media screen and (min-width: 769px) {
+        .changelist-filter {
+            flex-wrap: wrap;
+        }
+    }
+
+    .changelist-filter form {
+        max-width: 100%;
+    }
+
+    @media screen and (max-width: 768px) {
+        .changelist-filter form {
+            width: 100%;
+            box-sizing: border-box;
+        }
+    }
+
+    .changelist-filter form .label {
+        display: block;
+    }
+
+    @media screen and (max-width: 768px) {
+
+        .changelist-filter form .input,
+        .changelist-filter form .select {
+            width: 100%;
+            box-sizing: border-box;
+        }
+    }
+
+    .changelist-filter .duplo {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+    }
+
+    .changelist-filter .duplo div {
+        width: 100%;
+    }
+
+    @media screen and (max-width: 768px) {
+        .changelist-filter .duplo {
+            flex-direction: column;
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .changelist-filter {
+            flex-direction: column;
+        }
+    }
+
+    .changelist-filter .inputButton {
+        display: flex;
+    }
+
+    .changelist-filter .inputButton input {
+        flex: 1;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="content-main">
+    <div class="cabecalho">
+        <h1>{{curso.nome}}</h1>
+    </div>
+    <form method="get">
+        <div>
+            <label for="participante_id">Digite o nome ou email do participante:</label>
+            <input type="text" name="participante" id="participante_id" value="{{ request.GET.participante }}"
+                placeholder="Nome ou email" class="input">
+            <button type="submit"
+                style="background-color: transparent;outline: none;appearance: none;border: none;cursor: pointer;">
+                <i class="far fa-search" style="font-size: 20px"></i>
+            </button>
+        </div>
+    </form>
+
+    {% if inscricoes %}
+    <form style="overflow-x:auto;" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Marcar presença" class="default" style="float: unset !important;padding: 7px;">
+        <table id="result_list" style="margin-top: 15px;">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        <input type="checkbox" id="select_all" onclick="toggleSelectAll(this)">
+                    </th>
+                    <th scope="col" class="sortable column-matricula">
+                        <div class="text flex-header">
+                            <a href="?order_by=id&participante={{ request.GET.participante }}">Matrícula</a>
+                        </div>
+                        <div class="clear"></div>
+                    </th>
+                    <th scope="col" class="sortable column-nome">
+                        <div class="text flex-header">
+                            <a href="?order_by=discente__nome&participante={{ request.GET.participante }} ">Nome</a>
+                        </div>
+                        <div class="clear"></div>
+                    </th>
+                    <th scope="col" class="sortable column-email">
+                        <div class="text flex-header">
+                            <a href="?order_by=discente__email&participante={{ request.GET.participante }}">Email</a>
+                        </div>
+                        <div class="clear"></div>
+                    </th>
+                    <th scope="col" class="sortable column-presenca">
+                        <div class="text flex-header">
+                            <a href="?order_by=presenca&participante={{ request.GET.participante }} ">Presença
+                                marcada</a>
+                        </div>
+                        <div class="clear"></div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inscricao in inscricoes %}
+                <tr class="{% cycle 'row1' 'row2' %}">
+                    <td>
+                        <input type="checkbox" class="row_checkbox" name="inscricoes"
+                            value="{{ inscricao.id|unlocalize }}">
+                    </td>
+                    <td>{{ inscricao.id|unlocalize }}</td>
+                    <td>{{ inscricao.discente.nome }}</td>
+                    <td>{{ inscricao.discente.email }}</td>
+                    {% with icon_status=inscricao.presenca|yesno:"yes,no" %}
+                    <td><img src="{% static 'admin/img/icon-'|add:icon_status|add:'.svg' %}" alt=""></td>
+                    {% endwith %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+    <script>
+        function toggleSelectAll(selectAllCheckbox) {
+            const checkboxes = document.querySelectorAll('.row_checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+        }
+    </script>
+    {% endif %}
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
+<script src="{% static 'js/tingle.min.js' %}"></script>
+{% endblock %}

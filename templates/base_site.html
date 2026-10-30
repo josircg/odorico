@@ -6,6 +6,22 @@
     <link rel="stylesheet" href="{% static 'css/base.css' %}"/>
 {% endblock %}
 
+{% block extrahead %}
+    {{ block.super }}
+    <meta name="description" content="Odorico, plataforma de dados, dashboards e serviços acadêmicos.">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Odorico">
+    <meta property="og:title" content="Odorico">
+    <meta property="og:description" content="Odorico, plataforma de dados, dashboards e serviços acadêmicos.">
+    <meta property="og:image" content="{% if request %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/icone-og.png' %}{% else %}{% static 'img/icone-og.png' %}{% endif %}">
+    <meta property="og:image:alt" content="Logo do Odorico">
+    <meta property="og:url" content="{% if request %}{{ request.build_absolute_uri }}{% endif %}">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Odorico">
+    <meta name="twitter:description" content="Odorico, plataforma de dados, dashboards e serviços acadêmicos.">
+    <meta name="twitter:image" content="{% if request %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/icone-og.png' %}{% else %}{% static 'img/icone-og.png' %}{% endif %}">
+{% endblock %}
+
 {% block nav-global %}
     {{ block.super }}
 {% endblock %}

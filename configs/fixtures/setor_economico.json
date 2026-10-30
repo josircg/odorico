@@ -1,0 +1,152 @@
+[
+  {
+    "model": "nucleo.setoreconomico",
+    "pk": 1,
+    "fields": {
+      "descricao": "Agricultura, pecuária, prod. florestal, pesca"
+    }
+  },
+  {
+    "model": "nucleo.setoreconomico",
+    "pk": 2,
+    "fields": {
+      "descricao": "Indústria de transformação"
+    }
+  },
+  {
+    "model": "nucleo.setoreconomico",
+    "pk": 3,
+    "fields": {
+      "descricao": "Água, esgoto, atividade de gestão de resíduos e descontaminação"
+    }
+  },
+  {
+    "model": "nucleo.setoreconomico",
+    "pk": 4,
+    "fields": {
+      "descricao": "Construção"
+    }
+  },
+  {
+    "model": "nucleo.setoreconomico",
+    "pk": 5,
+    "fields": {
+      "descricao": "Comércio, Reparação de Veículos Automotores"
+    }
+  },
+  {
+    "model": "nucleo.setoreconomico",
+    "pk": 6,
+    "fields": {
+      "descricao": "Transporte, Armazenagem e correio"
+    }
+  },
+  {
+    "model": "nucleo.setoreconomico",
+    "pk": 7,
+    "fields": {
+      "descricao": "Alojamento e Alimentação"
+    }
+  },
+  {
+    "model": "nucleo.setoreconomico",
+    "pk": 8,
+    "fields": {
+      "descricao": "Informação e Comunicação"
+    }
+  },
+  {
+    "model": "nucleo.setoreconomico",
+    "pk": 9,
+    "fields": {
+      "descricao": "Atividade Financeira de Seguros e Serviços Relacionados"
+    }
+  },
+  {
+    "model": "nucleo.setoreconomico",
+    "pk": 10,
+    "fields": {
+      "descricao": "Atividades Imobiliárias"
+    }
+  },
+  {
+    "model": "nucleo.setoreconomico",
+    "pk": 11,
+    "fields": {
+      "descricao": "Atividades Profissionais, científicas e técnicas"
+    }
+  },
+  {
+    "model": "nucleo.setoreconomico",
+    "pk": 12,
+    "fields": {
+      "descricao": "Atividades administrativas e serviços complementares"
+    }
+  },
+  {
+    "model": "nucleo.setoreconomico",
+    "pk": 13,
+    "fields": {
+      "descricao": "Administração Pública, Defesa e Seguridade Social"
+    }
+  },
+  {
+    "model": "nucleo.setoreconomico",
+    "pk": 14,
+    "fields": {
+      "descricao": "Educação"
+    }
+  },
+  {
+    "model": "nucleo.setoreconomico",
+    "pk": 15,
+    "fields": {
+      "descricao": "Saúde Humana e Serviços Sociais"
+    }
+  },
+  {
+    "model": "nucleo.setoreconomico",
+    "pk": 16,
+    "fields": {
+      "descricao": "Arte, Cultura, Esporte e recreação"
+    }
+  },
+  {
+    "model": "nucleo.setoreconomico",
+    "pk": 17,
+    "fields": {
+      "descricao": "Outras atividades de serviços"
+    }
+  },
+  {
+    "model": "nucleo.setoreconomico",
+    "pk": 18,
+    "fields": {
+      "descricao": "Serviços Domésticos"
+    }
+  },
+  {
+    "model": "nucleo.setoreconomico",
+    "pk": 19,
+    "fields": {
+      "descricao": "Organismos Internacionais e Outras Instituições Extraterritoriais"
+    }
+  },
+  {
+    "model": "nucleo.setoreconomico",
+    "pk": 20,
+    "fields": {
+      "descricao": "Indústrias Extrativas"
+    }
+  },
+  {
+    "model": "nucleo.setoreconomico",
+    "pk": 21,
+    "fields": {
+      "descricao": "Eletricidade e Gás"
+    }
+  }
+]
+
+
+

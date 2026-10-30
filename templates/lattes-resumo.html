@@ -27,42 +27,52 @@
         .jqcloud-word.w1 {
           color: #5ca0cb;
           font-size: 130%;
+          font-family: "DejaVu Sans Condensed";
         }
         .jqcloud-word.w2 {
           color: #1b69a1;
           font-size: 160%;
+          font-family: "DejaVu Sans";
         }
         .jqcloud-word.w3 {
           color: #90c5f0;
           font-size: 200%;
+          font-family: "DejaVu Sans";
         }
         .jqcloud-word.w4 {
           color: #90c5f0;
           font-size: 250%;
+          font-family: "DejaVu Sans";
         }
         .jqcloud-word.w5 {
           color: #abb5f0;
           font-size: 300%;
+          font-family: "DejaVu Sans";
         }
         .jqcloud-word.w6 {
           color: #778be5;
           font-size: 350%;
+          font-family: "DejaVu Sans";
         }
         .jqcloud-word.w7 {
           color: #417630;
           font-size: 400%;
+          font-family: "DejaVu Sans";
         }
         .jqcloud-word.w8 {
           color: #417670;
           font-size: 450%;
+          font-family: "DejaVu Sans";
         }
         .jqcloud-word.w9 {
           color: #417690;
           font-size: 500%;
+          font-family: "DejaVu Sans";
         }
         .jqcloud-word.w10 {
           color: #283884;
           font-size: 550%;
+          font-family: "DejaVu Sans";
         }
     </style>
 
@@ -70,25 +80,28 @@
 {% block content %}
     <ul class="object-tools">
         {% if not processado %}
-            <li><a href="">Como baixar o arquivo que contém os seus dados no Lattes</a></li>
+            <li><a href="https://www.youtube.com/watch?v=E_B-NEc3b30">Como baixar o arquivo que contém os seus dados no Lattes</a></li>
         {% else %}
             <li><a href="/lattes-resumo/{{ identificador }}/?download=csv">Download CSV</a></li>
         {% endif %}
     </ul>
     <div class="content-main">
-        {% if not processado %}<h1 style="margin-bottom: 20px">Resumo Lattes</h1>{% endif %}
+        {% if not processado %}
+            <h1 style="margin-bottom: 20px">Resumo Lattes</h1>
+            <p>Importe o seu currículo Lattes e veja o resumo de toda a sua produção e baixe o CSV para usar em planilhas eletrônicas</p>
+        {% endif %}
         <div class="module tabela" id="changelist">
 
             {% if not processado %}
                 <form action="" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    {{ form.xml.label_tag }}: {{ form.xml }}
+                    {{ form.xml.label_tag }} {{ form.xml }}
                     {% if form.captcha.errors %}
                         {{ form.captcha.label_tag }}
                         {{ form.captcha.errors }}
                     {% endif %}
                     {{ form.captcha }}
-                    <button style="padding: 8px 20px; margin-top: 25px" type="submit" class="button">Enviar</button>
+                    <button style="padding: 5px 20px; margin-top: 6px" type="submit" class="button">Enviar</button>
                 </form>
 
             {% else %}
@@ -191,7 +204,7 @@
                 { text: '{{ tag }}', weight: {{ weight }}, link: ''},
             {% endfor %}
         ];
-            $('#keywords').jQCloud(words, {width: 550, height: 330});
+            $('#keywords').jQCloud(words, {width: 600, height: 400, steps: 20});
     </script>
 
 {% endblock %}

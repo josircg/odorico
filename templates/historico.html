@@ -1,0 +1,128 @@
+{% extends 'base_header.html' %}
+{% load static %}
+
+{% block content %}
+<div style="display: flex; justify-content: center; padding: 40px;">
+    <div class="historico-escolar-botao-pdf">
+      <form action="{% url 'historico' %}" method="get" target="_blank" class="d-inline">
+        <input type="hidden" name="pdf" value="1">
+        <input type="hidden" name="matricula" value="{{ matricula_hash }}">
+        <button type="submit" class="btn btn-danger btn-sm">
+          <i class="bi bi-file-earmark-pdf-fill"></i> Gerar PDF
+        </button>
+      </form>
+    </div>
+  <section class="historico-escolar-painel">
+    <!-- Cabeçalho -->
+    <div class="historico-escolar-header">
+      <img src="{% static 'img/logo-Ibict.png' %}" style="max-width: 190px; max-height: 70px;" alt="Logo Institucional">
+      <div class="historico-escolar-info-header">
+        <div class="historico-escolar-titulo">HISTÓRICO ESCOLAR</div>
+        <div class="historico-escolar-data">Emitido em {{ data_emissao }}</div>
+      </div>
+    </div>
+
+    <hr class="historico-escolar-divisor">
+
+    <!-- Dados Iniciais -->
+    <div class="historico-escolar-dados-iniciais">
+      <div class="coluna">
+        <label>Coordenação</label>
+        <div class="historico-escolar-vector">{{ coordenacao }}</div>
+        <label>Área de Conhecimento</label>
+        <div class="historico-escolar-vector">{{ area_conhecimento }}</div>
+      </div>
+      <div class="coluna">
+        <label>Curso</label>
+        <div class="historico-escolar-vector">{{ curso }}</div>
+        <label>Reconhecimento/Renovação</label>
+        <div class="historico-escolar-vector">{{ reconhecimento_renovacao }}</div>
+      </div>
+    </div>
+
+    <!-- Dados Pessoais -->
+    <div class="historico-escolar-dados-pessoais">
+      <div class="historico-escolar-coluna-dados-pessoais">
+        <div><strong>Nome Civil:</strong> {{ nome }}</div>
+        <div><strong>CPF:</strong> {{ cpf }}</div>
+        <div><strong>Data de Nascimento:</strong> {{ nascimento }}</div>
+        <div><strong>Identidade:</strong> {{ identidade }}</div>
+        <div><strong>Título de Eleitor:</strong> {{ titulo_eleitor }}</div>
+      </div>
+      <div class="historico-escolar-coluna-dados-pessoais">
+        <div><strong>Pai:</strong> {{ pai }}</div>
+        <div><strong>Mãe:</strong> {{ mae }}</div>
+        <div><strong>Naturalidade:</strong> {{ naturalidade }}</div>
+        <div><strong>Nacionalidade:</strong> {{ nacionalidade }}</div>
+        <div><strong>Certificado Militar/Dispensa:</strong> {{ certificado_militar }}</div>
+      </div>
+    </div>
+
+    <hr class="historico-escolar-divisor">
+
+    <!-- Dados da Matrícula -->
+    <div class="historico-escolar-dados-matricula">
+      <div>
+        <div><strong>Número da Matrícula:</strong> {{ matricula_numero }}</div>
+        <div><strong>Início:</strong> {{ inicio }}</div>
+        <div><strong>Regime:</strong> {{ regime }}</div>
+        <div><strong>Ingresso:</strong> {{ ingresso }}</div>
+        <div><strong>Término:</strong> {{ termino }}</div>
+      </div>
+      <div class="historico-escolar-legendas">
+        <div class="historico-escolar-codigo-colunas">
+          <strong>CÓDIGO DAS COLUNAS</strong>
+          <div>
+            <div>
+              <span>CrO - CRÉDITOS OBTIDOS</span>
+              <span>CH - CARGA HORÁRIA</span>
+              <span>SF - SITUAÇÃO FINAL</span>
+              <span>AP - APROVADO</span>
+              <span>RF - REP. P/ FREQUÊNCIA</span>
+            </div>
+            <div>
+              <span>RM - REPROVADO P/ MÉDIA</span>
+              <span>RFM - REP. P/ FREQ. MÉDIA</span>
+              <span>NCC - NÃO CONFERE CRÉDITO</span>
+              <span>NCG - NÃO CONFERE GRAU</span>
+              <span>CR - COEF. DE RENDIMENTO</span>
+            </div>
+          </div>
+        </div>
+        <div class="historico-escolar-conceitos">
+          <strong>CONCEITOS</strong>
+          <div>
+            <span>A  B  C  D</span>
+            <span>X - Não avaliado</span>
+            <span>J - Abandono Justificado</span>
+            <span>T - Dispensa de Disciplina</span>
+            <span>N - Abandono Não Justificado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{ tabela_disciplinas|safe }}
+
+    <hr class="historico-escolar-divisor">
+
+    <!-- Rodapé -->
+    <div class="historico-escolar-rodape">
+      <div class="historico-escolar-logo-rodape">
+          <img src="{% static 'img/logo-enacin.png' %}" alt="Logo Enacin" style="max-height: 35px; width: auto;">
+      </div>
+      <div>
+        <div class="historico-escolar-validacao">Acesse a página <span>{{ link_validacao }}</span></div>
+        <div class="historico-escolar-endereco">
+          Instituto Brasileiro de Informação em Ciência e Tecnologia (IBICT)<br>
+          Diretoria – Setor de Autarquias Sul (SAUS) Quadra 05 Lote 06 Bloco H 5º andar<br>
+          70070-912 - Brasília / DF
+        </div>
+      </div>
+      <div>
+        <img src="data:image/png;base64,{{qr_code}}" alt="QR Code" class="historico-escolar-qrcode">
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}

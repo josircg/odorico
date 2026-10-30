@@ -1,18 +1,4 @@
-"""odorico URL Configuration
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/2.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.conf.urls import url, include
 from django.contrib.auth import views as auth_views
@@ -20,6 +6,7 @@ from django.conf.urls.static import static
 
 from django.conf import settings
 from django.urls import path
+from django.views.generic import RedirectView
 
 from odorico.forms import EmailValidationOnForgotPassword
 
@@ -30,6 +17,7 @@ admin.site.index_title = 'Odorico'
 admin.site.site_title = 'Odorico'
 
 urlpatterns = [
+                  url(r'^favicon\.ico$', RedirectView.as_view(url='/static/favicon.ico')),
                   url(r'^admin/', admin.site.urls),
                   url(r'^admin_tools/', include('admin_tools.urls')),
                   url(r'^password_reset/$',
@@ -37,7 +25,23 @@ urlpatterns = [
                       name='password_reset'),
                   path('select2/', include('django_select2.urls')),
                   path('chaining/', include('smart_selects.urls')),
-                  url('^', include('django.contrib.auth.urls')),
                   url(r'^', include('nucleo.urls')),
+                  url('^', include('django.contrib.auth.urls')),
+                  url(r'^', include('utils.urls')),
                   url(r'^', include('qualis.urls')),
+                  url(r'^', include('editais.urls')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if hasattr(settings, 'ESCOLA'):
+    urlpatterns += [ url(r'^', include('escola.urls')) ]
+
+# Include django debug toolbar if DEBUG is on
+if settings.DEBUG:
+    urlpatterns += [
+        path("__debug__/", include('debug_toolbar.urls')),
+    ]
+
+if settings.SQLEXPLORER:
+    urlpatterns += [
+        path('explorer/', include('explorer.urls')),
+    ]

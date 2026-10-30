@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>Declaração de Matrícula</title>
+  <style>
+    /* Aumente a margem inferior para comportar o rodapé sem cortes */
+    @page {
+      size: A4;
+      margin: 0.5cm 2.5cm 3.2cm 2.5cm; /* top right bottom left */
+      @bottom-center { content: element(footer-pdf); }
+    }
+
+    body {
+      font-family: "DejaVu Sans", Arial, sans-serif;
+      font-size: 12pt;
+      color: #000;
+    }
+
+    /* Cabeçalho */
+    .cabecalho {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .logo-topo{
+      width: 800px;
+      align-items: center;
+      margin-left: -100px;
+      margin: -100px;
+    }
+    .titulo {
+      text-align: center;
+      font-size: 16pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin: 108px 0 48px 0;
+    }
+
+    /* Corpo */
+    .corpo {
+      text-align: justify;
+      line-height: 1.6;
+    }
+
+    .local {
+      margin-top: 160px;
+      text-align: center;
+    }
+
+    /* Assinatura / QR */
+    .assinatura {
+      margin-top: 150px;
+      text-align: center;
+    }
+    .linha-assinatura {
+      width: 100%;
+      margin: 8px 0 24px 0;
+      height: 0;
+      border-top: 1px solid #000;
+    }
+
+    /* Rodapé (running element) */
+    #footer-pdf {
+      position: running(footer-pdf);
+      width: 100%;                 /* usa toda a largura */
+      display: flex;               /* habilita controle flex */
+      justify-content: center;     /* CENTRALIZA horizontalmente */
+      align-items: center;         /* alinha verticalmente */
+      text-align: center;          /* fallback */
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Cabeçalho -->
+  <div class="cabecalho">
+    <!-- agora usa o nome genérico -->
+    <img class ="logo-topo" src="{{ static_root }}/img/logo-declaracao.png" alt="Logo Declaração">
+  </div>
+  <br/>
+  <div class="titulo">DECLARAÇÃO</div>
+
+  <div class="corpo">
+    <p>
+      Declaro que <strong>{{ nome_discente }}</strong>, inscrito(a) no CPF sob o número
+      <strong>{{ cpf_discente }}</strong>, é aluno(a) regularmente matriculado(a) no
+      <strong>Programa de Pós-graduação em Ciência da Informação do Instituto Brasileiro de Informação em Ciência e Tecnologia (Ibict)</strong>,
+      no curso de <strong>{{ curso_legenda }}</strong>
+      {% if numero_matricula %}, sob o número de matrícula <strong>{{ numero_matricula }}</strong>{% endif %}
+      , tendo iniciado em <strong>{{ data_inicio|date:"d/m/Y" }}</strong>{% if previsao_termino %}
+      e previsão de término regular em <strong>{{ previsao_termino|date:"d/m/Y" }}</strong>{% endif %}.
+    </p>
+
+    <div class="local">
+      <p>Rio de Janeiro, {{ data_extenso_hoje }}.</p>
+    </div>
+  </div>
+
+  <!-- Assinatura ou QR (se emitido pelo aluno) – mantém o QR ao final do texto -->
+  {% if qr_code %}
+    <div class="assinatura">
+      <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code de validação" style="width:120px;height:120px;" />
+      <div style="margin-top:8px;font-size:10pt;">
+        Valide em: {{ link_validacao }}
+      </div>
+    </div>
+  {% else %}
+    <div class="assinatura">
+      <div class="linha-assinatura"></div>
+      <div><strong>{{ assinatura_nome }}</strong></div>
+      <div>{{ assinatura_cargo }}</div>
+    </div>
+  {% endif %}
+
+  <!-- Rodapé fixo -->
+  <div id="footer-pdf">
+    <!-- usa o novo nome genérico para o rodapé -->
+    <img src="{{ static_root }}/img/rodape-declaracao.png" alt="Linha do rodapé">
+    </div>
+
+</body>
+</html>

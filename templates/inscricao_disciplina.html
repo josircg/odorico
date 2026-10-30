@@ -1,0 +1,167 @@
+{% extends "base_header.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block custom_styles %}
+<link rel="stylesheet" href="{% static 'css/inscricao_disciplina.css' %}">
+{% endblock %}
+{% block content %}
+<div class="container py-5 py-xl-6 inscricao-disciplina-page">
+  <h1 class="text-center mb-4">Inscrição em Disciplinas</h1>
+
+  <!-- {# ==========================
+     SEÇÃO 1 — DISPONÍVEIS
+     (mantém card e estrutura; só removi Status/CH/Tipo/Turma formada)
+     ========================== #} -->
+  <div class="card mx-auto card-inscricao mb-4">
+    <div class="card-body">
+      <h3 class="text-center mb-4 section-title">Disciplinas Disponíveis</h3>
+      <div class="text-muted text-center mb-4">
+        Após selecionar as disciplinas, confirme a inscrição para cadastrar sua inscrição.
+      </div>
+      <form method="post">
+        {% csrf_token %}
+
+        {% if form.fields.disciplinas.queryset %}
+          <div class="disc-box">
+            <div class="disc-list">
+              {% for d in form.fields.disciplinas.queryset %}
+                {% with turma=d.turma_ativa %}
+                <label class="disc-card-row" for="disc_{{ d.pk|default:forloop.counter }}">
+                  <div class="disc-card-header">
+                    <span class="disc-badge-inscrever">Inscrever</span>
+                    <span class="disc-switch">
+                      <input
+                        type="checkbox"
+                        class="disc-switch-input"
+                        name="disciplinas"
+                        id="disc_{{ d.pk|default:forloop.counter }}"
+                        value="{{ d.pk }}"
+                      >
+                      <span class="disc-switch-ui" aria-hidden="true">
+                        <span class="disc-switch-knob">
+                          <span class="disc-switch-icon disc-switch-icon-off">-</span>
+                          <span class="disc-switch-icon disc-switch-icon-on">&#10003;</span>
+                        </span>
+                      </span>
+                    </span>
+                  </div>
+                  <div class="disc-card-body">
+                    <div>
+                      <span class="disc-title-line">
+                        <i class="bi bi-journal-text disc-icon" aria-hidden="true"></i>
+                        {% firstof d.descricao d.titulo %} {% if d.codigo %}<small>({{ d.codigo }})</small>{% endif %}
+                      </span>
+                      {% if turma %}
+                        {% if turma.professores or turma.docentes or turma.calendario %}
+                          <div class="mt-1">
+                            <small>
+                              {% if turma.professores or turma.docentes %}
+                                <div><i class="bi bi-person-badge disc-icon" aria-hidden="true"></i> <strong>Docentes:</strong> {% firstof turma.professores turma.docentes %}</div>
+                              {% endif %}
+                              {% if turma.calendario %}
+                                <div><i class="bi bi-calendar-week disc-icon" aria-hidden="true"></i> <strong>Calendário:</strong> {{ turma.calendario }}</div>
+                              {% endif %}
+                            </small>
+                          </div>
+                        {% endif %}
+                      {% endif %}
+                    </div>
+                  </div>
+                </label>
+                {% endwith %}
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-center gap-2 mt-3">
+            <button type="submit" class="btn btn-primary">Confirmar Inscrição</button>
+            <a href="{% url 'painel_discente' %}" class="btn btn-secondary">Cancelar</a>
+          </div>
+        {% else %}
+          <div class="alert alert-warning text-center" role="alert">
+            <h5 class="mb-0"><strong>Sem disciplinas disponíveis para inscrição no momento.</strong></h5>
+          </div>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+
+  <!-- > ==========================
+     SEÇÃO 2 — INSCRITAS
+     (mantém card e botão; só removi Status/CH/Tipo/Turma formada)
+     ========================== #}-->
+  {% if inscricoes %}
+    <div class="card mx-auto card-inscricao">
+      <div class="card-body">
+        <h3 class="text-center mb-4">Disciplinas Inscritas</h3>
+        <div class="disc-box">
+          <div class="disc-list">
+          {% for i in inscricoes %}
+            <div class="disc-card-row disc-card-row-inscrita">
+              <div class="disc-card-header disc-card-header-inscrita">
+                <span class="disc-badge-inscrito">Inscrito</span>
+                {% if periodo_corrente.dt_fim_matricula and hoje <= periodo_corrente.dt_fim_matricula %}
+                  <form method="post" action="{% url 'cancelar_inscricao' i.id %}" class="disc-cancel-form">
+                    {% csrf_token %}
+                    <span class="disc-cancel-label">Cancelar inscrição</span>
+                    <button type="submit" class="disc-cancel-btn" aria-label="Cancelar inscrição">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5H6a.5.5 0 0 1-.5-.5z"/>
+                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1 0-2h3a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1h3a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118z"/>
+                      </svg>
+                    </button>
+                  </form>
+                {% endif %}
+              </div>
+              <div class="disc-card-body">
+                <div class="disc-title"><i class="bi bi-journal-text disc-icon" aria-hidden="true"></i> {{ i.nome }}</div>
+
+                {# META: mantém Código; remove Status/CH/Tipo #}
+                <div class="disc-meta text-muted">
+                  {% if i.codigo %}
+                    <span><strong>Código:</strong> {{ i.codigo }}</span>
+                  {% endif %}
+                </div>
+
+                {# TURMA: remove "Turma formada"; mantém Docentes/Calendário se houver #}
+                <div class="turma-info">
+                {% if i.professor %}
+                  <div><i class="bi bi-person-badge disc-icon" aria-hidden="true"></i> <strong>Docentes:</strong> {{ i.professor }}</div>
+                {% endif %}
+
+                {% if i.calendario %}
+                  <div><i class="bi bi-calendar-week disc-icon" aria-hidden="true"></i> <strong>Calendário:</strong> {{ i.calendario }}</div>
+                {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="alert alert-info text-center mt-3" role="alert">
+      Você ainda não possui disciplinas inscritas neste período.
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block custom_scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const rows = document.querySelectorAll('.disc-card-row');
+    rows.forEach((row) => {
+      const input = row.querySelector('.disc-switch-input');
+      if (!input) return;
+      const sync = () => {
+        row.classList.toggle('is-checked', input.checked);
+      };
+      input.addEventListener('change', sync);
+      sync();
+    });
+  });
+</script>
+{% endblock %}

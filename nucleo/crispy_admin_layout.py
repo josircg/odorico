@@ -22,4 +22,4 @@ class AdminField(Field):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.wrapper_class = 'fieldBox'
+        self.wrapper_class = 'fieldBox ' + kwargs.get('wrapper_class', '')

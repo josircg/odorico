@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Histórico Escolar</title>
+
+    <style>
+    /* ------------------------- Historico PDF (IMPRESSÃO) ------------------------- */
+    @page {
+      size: A4;
+      margin: 2.5cm 0.5cm 2cm 0.25cm; /* topo, direita, inferior, esquerda */
+      @top-left { content: element(header-pdf); }
+      @top-right {
+        content: "Página " counter(page) " de " counter(pages);
+        font-size: 10px;
+        font-family: Arial, sans-serif;
+      }
+      @bottom-left { content: element(footer-pdf); }
+    }
+
+    #header-pdf { position: running(header-pdf); padding: 10px 0; }
+    #footer-pdf { position: running(footer-pdf); padding: 10px 0; }
+
+    /* Cabeçalho/Rodapé do PDF */
+    .historico-escolar-header-pdf,
+    .historico-escolar-rodape-pdf {
+      display: flex;
+      position: relative;         /* referencia para posicionar o bloco central */
+      width: 780px;
+      justify-content: space-between;
+      justify-items: center;
+    }
+    .historico-escolar-rodape-pdf  { margin-top: 16px; }
+
+    .historico-escolar-info-header {
+      text-align: center;
+      flex-grow: 1;
+    }
+
+    .historico-escolar-titulo {
+      font-size: 20pt;
+      font-weight: bold;
+    }
+
+    .historico-escolar-data {
+      font-size: 8pt;
+      margin-top: 2px;
+    }
+
+
+    body.historico-escolar-pdf { background: #fff; }
+
+    /* Painel principal do PDF */
+    .historico-escolar-painel-pdf {
+      width: 760px;          /* corrigido (antes 760%) */
+      max-width: 100%;
+      padding: 5px;         /* respiro interno */
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+      font-size: 11px;       /* ligeiramente menor que tela para evitar quebra */
+    }
+
+    /* Layout em colunas (versão flex) */
+    .historico-escolar-dados-iniciais{
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+    }
+
+    .historico-escolar-dados-pessoais{
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+      width: 100%;
+    }
+
+
+    /* Campos “tipo input” no PDF */
+    .historico-escolar-vector-pdf{
+      min-height: 18px !important;
+      height: auto !important;
+      width: 365px;
+      border: 1px solid #ccc;
+      padding: 3px 6px !important;
+      line-height: 1.25 !important;
+      box-sizing: border-box !important;
+      font-size: 11px !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      margin-bottom: 2px !important;    /* respiro entre “boxes” empilhados */
+    }
+
+    /* Coluna específica de dados pessoais no PDF */
+    .historico-escolar-coluna-dados-pessoais-pdf {
+      display: flex;
+      flex-direction: column;
+      width: 365px;
+    }
+
+    /* Tabela do PDF: leve respiro nas células (consolidado) */
+    .historico-escolar-tabela th,
+    .historico-escolar-tabela td {
+      border: none !important;
+      padding: 6px 8px !important;
+    }
+
+    .historico-escolar-dados-matricula {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+    }
+
+     .historico-escolar-dados-matricula-curso {
+      display: flex;
+      flex-direction: column;
+      width: 370px;
+    }
+
+    /* Legendas (consolidado) */
+    .historico-escolar-legendas {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      justify-content: flex-end;
+    }
+
+    /* faça os dois blocos caberem com folga dentro dos 350px */
+    .historico-escolar-codigo-colunas {
+      display: flex;
+      flex-direction: column;
+      margin-right: 2px;
+      width: 250px;   /* era 240 */
+      background-color: #d1e9ff;
+      border-radius: 5px;
+      padding: 5px;
+      font-size: 8px;
+    }
+    .historico-escolar-codigo-colunas > div {
+      display: flex;
+    }
+
+    .historico-escolar-codigo-colunas > div > div {
+      display: flex;
+      flex-direction: column;
+      margin-right: 10px;
+    }
+
+    .historico-escolar-conceitos {
+      background-color: #d1e9ff;
+      border-radius: 5px;
+      padding: 3px;
+      font-size: 8px;
+      width: 120px;
+      height: auto;
+      display: flex;
+      flex-direction: column;
+      margin-left: 2px;
+    }
+    .historico-escolar-conceitos > div {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Tabela */
+    .historico-escolar-tabela {
+      font-size: 10px;
+      margin-top: 5px;
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 4px; /* 4px de espaço vertical entre linhas */
+      text-align: center;
+    }
+    .historico-escolar-tabela thead tr {
+      background-color: #033175;
+      color: white;
+    }
+    .historico-escolar-tabela th:first-child {
+      border-radius: 10px 0 0 10px;
+    }
+    .historico-escolar-tabela th:last-child {
+      border-radius: 0 10px 10px 0;
+    }
+    .historico-escolar-inicio-periodo {
+      border-top: 1px solid #ccc;
+    }
+    .historico-escolar-azul {
+      background-color: #d1e9ff;
+      margin-bottom: 10px;
+    }
+    .historico-escolar-escuro {
+      background-color: #033175;
+
+      color: white;
+    }
+    .historico-escolar-totais-label {
+      font-weight: bold;
+      vertical-align: middle;
+    }
+    .historico-escolar-totais-periodo {
+      text-align: end;
+      font-weight: bold;
+    }
+
+    /* Rodapé */
+    .historico-escolar-rodape {
+      display: flex;
+      justify-content: space-between;
+      justify-content: flex-end;
+      margin-top: 5px;
+    }
+
+    .historico-escolar-logo-rodape {
+      background: linear-gradient(90deg, #007FF0 0%, #033175 100%);
+      height: 45px;
+      width: 130px;
+      border-radius: 0px 80px 0px 0px;
+      padding: 2px 15px 2px 5px;
+      display: flex;
+      justify-items: center;
+      justify-content: center;
+    }
+
+    .historico-escolar-validacao {
+      font-size: 10px;
+      margin-bottom: 4px;
+    }
+
+    .historico-escolar-endereco {
+      font-size: 8px;
+      line-height: 1.2;
+    }
+
+    .historico-escolar-qrcode {
+      width: 60px;
+      height: 60px;
+    }
+
+    /* =================== FIM: APENAS REGRAS PARA PDF/PRINT =================== */
+  </style>
+
+  </head>
+
+  <body class="historico-escolar-pdf">
+    <div style="display:flex; justify-content:center;">
+      <section class="historico-escolar-painel-pdf">
+
+        <!-- Cabeçalho (corrente) -->
+        <div class="historico-escolar-header-pdf" id="header-pdf">
+          <img src="{{ static_root }}/img/logo-Ibict.png" style="max-width:190px; max-height:70px;" alt="Logo Institucional">
+          <div class="historico-escolar-info-header">
+            <div class="historico-escolar-titulo">HISTÓRICO ESCOLAR</div>
+            <div class="historico-escolar-data">Emitido em {{ data_emissao }}</div>
+          </div>
+        </div>
+
+        <hr class="historico-escolar-divisor">
+
+        <!-- Dados Iniciais -->
+        <div class="historico-escolar-dados-iniciais">
+          <div class="coluna">
+            <label>Coordenação</label>
+            <div class="historico-escolar-vector-pdf">{{ coordenacao }}</div>
+            <label>Área de Conhecimento</label>
+            <div class="historico-escolar-vector-pdf">{{ area_conhecimento }}</div>
+          </div>
+          <div class="coluna">
+            <label>Curso</label>
+            <div class="historico-escolar-vector-pdf">{{ curso }}</div>
+            <label>Reconhecimento/Renovação</label>
+            <div class="historico-escolar-vector-pdf">{{ reconhecimento_renovacao }}</div>
+          </div>
+        </div>
+
+        <!-- Dados Pessoais -->
+        <div class="historico-escolar-dados-pessoais">
+          <div class="historico-escolar-coluna-dados-pessoais-pdf">
+            <div><strong>Nome Civil:</strong> {{ nome }}</div>
+            <div><strong>CPF:</strong> {{ cpf }}</div>
+            <div><strong>Data de Nascimento:</strong> {{ nascimento }}</div>
+            <div><strong>Identidade:</strong> {{ identidade }}</div>
+            <div><strong>Título de Eleitor:</strong> {{ titulo_eleitor }}</div>
+          </div>
+          <div class="historico-escolar-coluna-dados-pessoais-pdf">
+            <div><strong>Pai:</strong> {{ pai }}</div>
+            <div><strong>Mãe:</strong> {{ mae }}</div>
+            <div><strong>Naturalidade:</strong> {{ naturalidade }}</div>
+            <div><strong>Nacionalidade:</strong> {{ nacionalidade }}</div>
+            <div><strong>Certificado Militar/Dispensa:</strong> {{ certificado_militar }}</div>
+          </div>
+        </div>
+
+        <hr class="historico-escolar-divisor">
+
+        <!-- Dados da Matrícula -->
+        <div class="historico-escolar-dados-matricula">
+          <div class="historico-escolar-dados-matricula-curso">
+            <div><strong>Número de Matrícula:</strong> {{ matricula_numero }}</div>
+            <div><strong>Início:</strong> {{ inicio }}</div>
+            <div><strong>Regime:</strong> {{ regime }}</div>
+            <div><strong>Ingresso:</strong> {{ ingresso }}</div>
+            <div><strong>Término:</strong> {{ termino }}</div>
+          </div>
+
+          <div class="historico-escolar-legendas">
+            <div class="historico-escolar-codigo-colunas">
+              <strong>CÓDIGO DAS COLUNAS</strong>
+              <div>
+                <div>
+                  <span>CrO - CRÉDITOS OBTIDOS</span>
+                  <span>CH - CARGA HORÁRIA</span>
+                  <span>SF - SITUAÇÃO FINAL</span>
+                  <span>AP - APROVADO</span>
+                  <span>RF - REP. P/ FREQUÊNCIA</span>
+                </div>
+                <div>
+                  <span>RM - REPROVADO P/ MÉDIA</span>
+                  <span>RFM - REP. P/ FREQ. MÉDIA</span>
+                  <span>NCC - NÃO CONFERE CRÉDITO</span>
+                  <span>NCG - NÃO CONFERE GRAU</span>
+                  <span>CR - COEF. DE RENDIMENTO</span>
+                </div>
+              </div>
+            </div>
+            <div class="historico-escolar-conceitos">
+              <strong>CONCEITOS</strong>
+              <div>
+                <span>A  B  C  D</span>
+                <span>X - Não avaliado</span>
+                <span>J - Abandono Justificado</span>
+                <span>T - Dispensa de Disciplina</span>
+                <span>N - Abandono Não Justificado</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {{ tabela_disciplinas|safe }}
+
+        <hr class="historico-escolar-divisor">
+
+        <!-- Rodapé (corrente) -->
+        <div class="historico-escolar-rodape-pdf" id="footer-pdf">
+          <div class="historico-escolar-logo-rodape">
+            <img src="{{ static_root }}/img/logo-enacin.png" alt="Logo Enacin" style="max-height:35px; width:auto;">
+          </div>
+          <div>
+            <div class="historico-escolar-validacao">
+              Acesse a página <span>{{ link_validacao }}</span>
+            </div>
+            <div class="historico-escolar-endereco">
+              Instituto Brasileiro de Informação em Ciência e Tecnologia (IBICT)<br>
+              Diretoria – Setor de Autarquias Sul (SAUS) Quadra 05 Lote 06 Bloco H 5º andar<br>
+              70070-912 - Brasília / DF
+            </div>
+          </div>
+          <div>
+            <img src="data:image/png;base64,{{qr_code}}" alt="QR Code" class="historico-escolar-qrcode">
+          </div>
+        </div>
+
+      </section>
+    </div>
+  </body>
+</html>

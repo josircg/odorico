@@ -1,0 +1,12 @@
+{% extends "base_header.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <div class="container d-flex justify-content-center mt-5">
+    <div style="max-width: 40rem; width: 100%;">
+      <h2 class="text-center">Solicitação de Orientador</h2>
+      <!-- Renderiza o formulário com crispy-forms -->
+      {% crispy form %}
+    </div>
+  </div>
+{% endblock %}

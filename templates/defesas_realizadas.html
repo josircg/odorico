@@ -8,27 +8,28 @@
         <div>
             <form action="/defesas_realizadas/" method="GET">
                 <div class="changelist-filter">
-                    <label for="mes">Mês:</label>
-                    <select name="mes" id="mes">
-                    </select>
                     <label for="ano">Ano:</label>
                     <input type="text" name="ano" id="ano" required value="{% if request.GET.ano %}{{ request.GET.ano}}{% else %}0{% endif %}">
+                    <label for="mes">Mês (opcional):</label>
+                    <select name="mes" id="mes">
+                    </select>
                     <input type="submit" value="Buscar" id="buscar">
                 </div>
             </form>
             <fieldset class="module aligned">
             {% if result.valores %}
-                {% for valor in result.valores %}
-                    <div class="dataset">
-                        <div class="linha">
-                            {% for k in result.keys %}
-                                <label>{{ k }}</label>
-                                <div class="col">{{ valor|get_item:k }}</div>
-                                <div class="clear"></div>
-                            {% endfor %}
-                        </div>
+                <div class="dataset2">
+                {% for linha in result.valores %}
+                    <div class="linha">
+                    {% for header, valor in linha.items %}
+                        <div style="width: 100px; float: left;">{{ header }}</div>
+                        <div class="col">{{ valor }}</div>
+                        <div class="clear"></div>
+                    {% endfor %}
                     </div>
+                    <hr/>
                 {% endfor %}
+                </div>
              {% else %}
                 <p>Nenhum registro encontrado.</p>
             {% endif %}
@@ -49,9 +50,11 @@
               }
 
               var x = document.getElementById("mes");
+              let todos = document.createElement("option");
+              x.add(todos, "Todos");
 
               for(var i = 1 ; i <= 12; i++){
-                  var mes = {% if request.GET.mes %}{{ request.GET.mes }}{% else %}1{% endif %};
+                  var mes = {% if request.GET.mes %}{{ request.GET.mes }}{% else %}0{% endif %};
                   var option = document.createElement("option");
                   if (mes === i) {
                       option.setAttribute('selected', '');

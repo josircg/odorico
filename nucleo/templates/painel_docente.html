@@ -1,0 +1,132 @@
+{% extends 'base_header.html' %}
+
+{% block content %}
+  <section id="panel">
+    <div class="container py-4 py-xl-5">
+      <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3">
+        <!-- Card Orientações -->
+        <div class="col mb-4 d-flex flex-column align-items-center">
+          <a href="{% url 'orientacoes' %}" class="card card-painel text-decoration-none">
+            <div class="card-body d-flex flex-column align-items-center p-4">
+              <strong style="font-size: 24px; color: rgb(33, 37, 41);">Orientações</strong>
+              <div class="bs-icon-md bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center d-inline-block mt-1 mb-3 bs-icon">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="1em"
+                     height="1em"
+                     fill="currentColor"
+                     viewBox="0 0 16 16"
+                     style="font-size: 30px;">
+                  <path d="M8 0 0 4l8 4 6-3v4h1V4L8 0z"/>
+                  <path d="M3 6.5v3C3 10.88 5.239 12 8 12s5-1.12 5-2.5v-3l-5 2.5-5-2.5z"/>
+                  <path d="M14.5 5.5a.5.5 0 0 1 .5.5v3.793l.354.353a.5.5 0 0 1-.708.708l-.5-.5A.5.5 0 0 1 14 10V6a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Card Bancas -->
+        <div class="col mb-4 d-flex flex-column align-items-center">
+          <a href="{% url 'bancas_docente' %}" class="card card-painel text-decoration-none">
+            <div class="card-body d-flex flex-column align-items-center p-4">
+              <strong style="font-size: 24px; color: rgb(33, 37, 41);">Bancas</strong>
+              <div class="bs-icon-md bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center d-inline-block mt-1 mb-3 bs-icon">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="1em"
+                     height="1em"
+                     fill="currentColor"
+                     viewBox="0 0 16 16"
+                     class="bi bi-people"
+                     style="font-size: 30px;">
+
+                  <path d="M5 5a2 2 0 1 0-4 0 2 2 0 0 0 4 0z"/>
+                  <path d="M0 12c0-1.657 2.686-2.5 4-2.5S8 10.343 8 12v1H0v-1z"/>
+                  <path d="M15 5a2 2 0 1 0-4 0 2 2 0 0 0 4 0z"/>
+                  <path d="M8 13v-1c0-1.657 2.686-2.5 4-2.5s4 .843 4 2.5v1H8z"/>
+                  <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                  <path d="M2 13c0-2 3-3 6-3s6 1 6 3v1H2v-1z"/>
+                </svg>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Produção -->
+        {% if professor.id_cnpq %}  
+        <div class="col mb-4 d-flex flex-column align-items-center">
+          <a href="{% url 'producao_projeto' professor.id_cnpq %}" class="card card-painel text-decoration-none">
+            <div class="card-body d-flex flex-column align-items-center p-4">
+              <strong style="font-size: 24px; color: rgb(33, 37, 41);">Produção</strong>
+              <div class="bs-icon-md bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center d-inline-block mb-3 bs-icon">
+                <!-- ícone “doc/pdf” -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor"
+                     viewBox="0 0 16 16" class="bi bi-file-earmark-text" style="font-size: 30px;">
+                  <path d="M5 7h6v1H5V7zm0 2h6v1H5V9zm0 2h6v1H5v-1z"/>
+                  <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM9.5 3H4a1 1 0 0 0-1 1v10a1
+                        1 0 0 0 1 1h8a1 1 0 0 0 1-1V5.5H10a.5.5 0 0 1-.5-.5V3z"/>
+                </svg>
+              </div>
+            </div>
+          </a>
+        </div>
+        {% endif %}  
+
+        <!-- Projetos de Pesquisa
+          <div class="col mb-4 d-flex flex-column align-items-center">
+            <a href="{% url 'producao_projeto' professor.id_lattes %}" class="card card-painel text-decoration-none">
+              <div class="card-body d-flex flex-column align-items-center p-4">
+                <strong style="font-size: 24px; color: rgb(33, 37, 41);">Projetos de Pesquisa</strong>
+                <div class="bs-icon-md bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center d-inline-block mt-1 mb-3 bs-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg"
+                       width="1em"
+                       height="1em"
+                       fill="currentColor"
+                       viewBox="0 0 16 16"
+                       class="bi bi-journal-text"
+                       style="font-size: 30px;">
+
+                    <path d="M3 0h8a2 2 0 0 1 2 2v13a1 1 0 0 1-1 1H3a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h9V2a1 1 0 0 0-1-1H3z"/>
+                    <path d="M5 4h6v1H5V4zm0 2h6v1H5V6zm0 2h4v1H5V8z"/>
+                  </svg>
+                </div>
+              </div>
+            </a>
+          </div>
+        -->
+      </div>
+    </div>
+
+    {% if turmas %}
+      <div class="container d-flex flex-column">
+        <h1 style="text-align: center;margin-top: 15px;">Turmas</h1>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+            <tr style="text-align: center;">
+              <th style="border-top-width: 0;">Período</th>
+              <th style="border-top-width: 0;">Disciplina</th>
+              <th style="border-top-width: 0;">Carga Horária</th>
+              <th style="border-top-width: 0;">Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for turma in turmas %}
+              <tr style="text-align: center;">
+                <td style="border-top-width: 1px;">{{ turma.periodo }}</td>
+                <td style="border-top-width: 1px;">
+                    <a href="{% url 'turma_avaliacao' turma.id %}">{{ turma.disciplina }}</a>
+                </td>
+                <td style="border-top-width: 1px;">
+                    <a href="{% url 'diario_de_classe' turma.id %}">Diário</a>
+                </td>
+                <td>{{ turma.disciplina.carga_horaria }}</td>
+                <td>{{ turma.disciplina.get_status_display }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}

@@ -1,0 +1,160 @@
+{% extends 'base_header.html' %}
+
+{% block content %}
+<section id="panel">
+<div class="container py-4 py-xl-5">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3">
+        <!-- Card Meus Dados -->
+        {% if visibilidade_cards.meus_dados %}
+        <div class="col mb-4 d-flex flex-column align-items-center">
+            <a href="{% url 'edit_aluno' user.id %}" class="card card-painel text-decoration-none">
+                <div class="card-body d-flex flex-column align-items-center p-4">
+                    <strong style="font-size: 24px; color: rgb(33, 37, 41);">Meus Dados</strong>
+                    <div class="bs-icon-md bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center d-inline-block mt-1 mb-3 bs-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-person-plus" style="font-size: 30px;">
+                            <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664z"></path>
+                            <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5"></path>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- Card Histórico Escolar -->
+        {% if visibilidade_cards.historico_escolar %}
+        <div class="col mb-4 d-flex flex-column align-items-center">
+            <a href="{% url 'historico' %}" class="card card-painel text-decoration-none">
+                <div class="card-body d-flex flex-column align-items-center p-4">
+                    <strong style="font-size: 24px; color: rgb(33, 37, 41);">Histórico Escolar</strong>
+                    <div class="bs-icon-md bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center d-inline-block mt-1 mb-3 bs-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-clipboard-data" style="font-size: 30px;">
+                            <path d="M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0z"></path>
+                            <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"></path>
+                            <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- Card Boletim -->
+        {% if visibilidade_cards.boletim %}
+        <div class="col mb-4 d-flex flex-column align-items-center">
+            <a href="{% url 'boletim' %}" class="card card-painel text-decoration-none">
+                <div class="card-body d-flex flex-column align-items-center p-4">
+                    <strong style="font-size: 24px; color: rgb(33, 37, 41);">Boletim</strong>
+                    <div class="bs-icon-md bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center d-inline-block mt-1 mb-3 bs-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-card-checklist" style="font-size: 30px;">
+                            <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"></path>
+                            <path d="M7 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0M7 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0"></path>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- Card Inscrição -->
+        {% if visibilidade_cards.inscricao_disciplinas %}
+        <div class="col mb-4 d-flex flex-column align-items-center">
+            <a href="{% url 'inscricao_disciplina' %}" class="card card-painel text-decoration-none">
+                <div class="card-body d-flex flex-column align-items-center p-4">
+                    <strong style="font-size: 21px; color: rgb(33, 37, 41);">Inscrição em Disciplinas</strong>
+                    <div class="bs-icon-md bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center d-inline-block mb-3 bs-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-journal-plus" style="font-size: 30px;">
+                            <path fill-rule="evenodd" d="M7.5 5a.5.5 0 0 1 .5.5v2h2a.5.5 0 0 1 0 1h-2v2a.5.5 0 0 1-1 0v-2h-2a.5.5 0 0 1 0-1h2v-2a.5.5 0 0 1 .5-.5"/>
+                            <path d="M3 0h10a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V1a1 1 0 0 1 1-1zm1 2a.5.5 0 0 0 0 1h8a.5.5 0 0 0 0-1H4z"/>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- Declaração Matrícula -->
+        {% if visibilidade_cards.declaracao_matricula and matricula_id %}
+        <div class="col mb-4 d-flex flex-column align-items-center">
+        <a href="{% url 'declaracao_matricula_pdf' matricula_id %}" class="card card-painel text-decoration-none" target="_blank" rel="noopener">
+            <div class="card-body d-flex flex-column align-items-center p-4">
+            <strong style="font-size: 24px; color: rgb(33, 37, 41);">Declaração</strong>
+            <div class="bs-icon-md bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center d-inline-block mb-3 bs-icon">
+                <!-- ícone “doc/pdf” -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor"
+                    viewBox="0 0 16 16" class="bi bi-file-earmark-text" style="font-size: 30px;">
+                <path d="M5 7h6v1H5V7zm0 2h6v1H5V9zm0 2h6v1H5v-1z"/>
+                <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM9.5 3H4a1 1 0 0 0-1 1v10a1
+                        1 0 0 0 1 1h8a1 1 0 0 0 1-1V5.5H10a.5.5 0 0 1-.5-.5V3z"/>
+                </svg>
+            </div>
+            </div>
+        </a>
+        </div>
+        {% endif %}
+
+        <!-- Card Requerimentos -->
+        {% if visibilidade_cards.requerimentos %}
+        <div class="col mb-4 d-flex flex-column align-items-center">
+            <a href="{% url 'requerimentos' %}" class="card card-painel text-decoration-none">
+                <div class="card-body d-flex flex-column align-items-center p-4">
+                    <strong style="font-size: 24px; color: rgb(33, 37, 41);">Requerimentos</strong>
+                    <div class="bs-icon-md bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center d-inline-block mt-1 mb-3 bs-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-folder" style="font-size: 30px;">
+                            <path d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4H2.19zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endif %}
+
+        {% if visibilidade_cards.admin %}
+        <div class="col mb-4 d-flex flex-column align-items-center">
+            <a href="/admin" class="card card-painel text-decoration-none">
+                <div class="card-body d-flex flex-column align-items-center p-4">
+                    <strong style="font-size: 24px; color: rgb(33, 37, 41);">Admin</strong>
+                    <div class="bs-icon-md bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center d-inline-block mt-1 mb-3 bs-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-folder" style="font-size: 30px;">
+                            <path d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4H2.19zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<div class="container d-flex flex-column py-1">
+    <h3 style="text-align: center; margin-bottom: 5px;">{{ orientacao }}</h3>
+</div>
+
+{% if visibilidade_cards.disciplinaAtiva %}
+<div class="container d-flex flex-column py-1">
+    <h1 style="text-align: center;margin-top: 15px;">Disciplina Ativas</h1>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr style="text-align: center;">
+                    <th style="border-top-width: 0px;">Disciplina</th>
+                    <th style="border-top-width: 0px;">Professor</th>
+                    <th style="border-top-width: 0px;">Dias</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for disciplina in disciplinas %}
+                <tr style="text-align: center;">
+                    <td>{{ disciplina.nome }}</td>
+                    <td>{{ disciplina.professores }}</td>
+                    <td>{{ disciplina.calendario }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+</section>
+{% endblock %}

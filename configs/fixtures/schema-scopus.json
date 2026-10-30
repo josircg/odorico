@@ -1,0 +1,17 @@
+[
+  {"model": "qualis.schema",
+   "fields": {"descricao": "Scopus 2024", "sigla": "CS2024", "nota": "Scopus 2024", "ano_inicial": 2024, "ano_final": 2024}
+  },
+  {"model": "qualis.schema",
+   "fields": {"descricao": "Scopus 2022", "sigla": "CS2022", "nota": "Scopus 2022", "ano_inicial": 2024, "ano_final": 2024}
+  },
+  {"model": "qualis.schema",
+   "fields": {"descricao": "Scimago 2024", "sigla": "SJR2024", "nota": "Scimago Journal Ranking", "ano_inicial": 2024, "ano_final": 2024}
+  },
+  {"model": "qualis.schema",
+   "fields": {"descricao": "Scimago 2022", "sigla": "SJR2022", "nota": "Scimago Journal Ranking", "ano_inicial": 2022, "ano_final": 2022}
+  },
+  {"model": "qualis.schema",
+   "fields": {"descricao": "Scimago Quartis 2024", "sigla": "SQH2024", "nota": "Quartis e H-Index Scimago de 2024", "ano_inicial": 2021, "ano_final": 2024}
+  }
+]

@@ -1,0 +1,26 @@
+[
+{
+  "model": "utils.tipoprocessamento",
+  "pk": 1,
+  "fields": {
+    "tipo": 2,
+    "template_email": "Prezada(o) docente, \r\n\r\nIniciamos um novo processo de avaliação anual da produção discente do nosso programa que agora será todo online.\r\n\r\nSolicitamos que clique no link abaixo para aprovar a produção de seus orientandas(os):\r\n\r\n<<Link>>\r\n\r\nAtenção: não compartilhe ou retransmita o link acima. Quem tiver acesso a esse link poderá registrar informações utilizando o seu cadastro.\r\n\r\nAtenciosamente,\r\nSecretaria"
+  }
+},
+{
+  "model": "utils.tipoprocessamento",
+  "pk": 2,
+  "fields": {
+    "tipo": 1,
+    "template_email": "Prezada(o) discente, \r\n\r\nIniciamos um novo processo de avaliação anual da produção discente do nosso programa que agora será todo online.\r\n\r\nSolicitamos que clique no link abaixo e registre sua produção em nosso sistema:\r\n\r\n{{link}}\r\n\r\nAtenção: não compartilhe ou retransmita o link acima. Quem tiver acesso a esse link poderá registrar informações no seu cadastro.\r\n\r\nAtenciosamente,\r\nSecretaria"
+  }
+},
+{
+  "model": "utils.tipoprocessamento",
+  "pk": 3,
+  "fields": {
+    "tipo": 3,
+    "template_email": "Prezada(o) discente, \r\n\r\nO seu orientador solicitou ajustes no seu relatório de produção:\r\n\r\n{{observacao}}\r\n\r\nSolicitamos que clique no link abaixo e ajuste sua produção em nosso sistema:\r\n\r\n{{link}}\r\n\r\nAtenção: não compartilhe ou retransmita o link acima. Quem tiver acesso a esse link poderá registrar informações no seu cadastro.\r\n\r\nAtenciosamente,\r\nSecretaria"
+  }
+}
+]

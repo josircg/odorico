@@ -1,0 +1,102 @@
+[
+  {
+    "model": "nucleo.tipoocorrencia",
+    "pk": 1,
+    "fields": {
+      "descricao": "Solicitação de Orientação",
+      "detalhe": "Permite que você solicite a orientação de determinada(o) docente do programa. Após a aprovação por parte da(o) docente, a solicitação já será encaminhada automaticamente para a Comissão de Deliberativa (CD)",
+      "url_requerimento": "/solicita-orientador",
+      "template": "Trata-se da solicitação de Vinculação de Orientação de {matricula.curso.tipo_curso} (#{ocorrencia.id}), da(o) discente {aluno.nome}, Matrícula {matricula.numero}), indicando como orientador(a) {orientador.nome} {coorientador_se_houver}",
+      "status": "A"
+    }
+  },
+  {
+    "model": "nucleo.tipoocorrencia",
+    "pk": 2,
+    "fields": {
+      "descricao": "Pedido de Homologação de Defesa de Doutorado",
+      "detalhe": "Permite que você solicite a homologação da data de defesa da sua tese. A solicitação será encaminhada automaticamente para a Comissão de Deliberativa (CD).",
+      "template": "Trata-se da solicitação de homologação de Banca de defesa de Tese (#{ocorrencia.id}) da(o) discente {aluno.nome} ({matricula.numero}), orientado por {orientador.nome}, para realização em {horario}, modalidade {modalidade}",
+      "url_requerimento": "/homologacao_defesa?tipo=2&etapa=D",
+      "status": "A"
+    }
+  },
+  {
+    "model": "nucleo.tipoocorrencia",
+    "pk": 3,
+    "fields": {
+      "descricao": "Pedido de Homologação de Defesa de Mestrado",
+      "detalhe": "Permite que você solicite a homologação da data de defesa da sua dissertação. A solicitação será encaminhada automaticamente para a Comissão de Deliberativa (CD).",
+      "template": "Trata-se da solicitação de homologação de Banca de defesa de dissertação da(o) discente {aluno.nome} ({matricula.numero}), orientado por {orientador.nome}, para realização em {horario}, modalidade {modalidade}",
+      "url_requerimento": "/homologacao_defesa?tipo=3&etapa=D",
+      "status": "A"
+    }
+  },
+  {
+    "model": "nucleo.tipoocorrencia",
+    "pk": 4,
+    "fields": {
+      "descricao": "Pedido de Homologação de Qualificação de Mestrado",
+      "detalhe": "Permite que você solicite a homologação da data de qualificação da sua tese. A solicitação será encaminhada automaticamente para a Comissão de Deliberativa (CD).",
+      "template": "Trata-se da solicitação de homologação de qualificação de dissertação da(o) discente {aluno.nome} ({matricula.numero}), orientada(o) por {orientador.nome}, para realização em {horario}, modalidade {modalidade}",
+      "url_requerimento": "/homologacao_defesa?tipo=4&etapa=Q",
+      "status": "A"
+    }
+  },
+  {
+    "model": "nucleo.tipoocorrencia",
+    "pk": 5,
+    "fields": {
+      "descricao": "Pedido de Homologação de Qualificação de Doutorado",
+      "detalhe": "Permite que você solicite a homologação da data de qualificação da sua tese. A solicitação será encaminhada automaticamente para a Comissão de Deliberativa (CD).",
+      "template": "Trata-se da solicitação de homologação de qualificação da tese da(o) discente {aluno.nome} ({matricula.numero}), orientada(o) por {orientador.nome}, para realização em {horario}, modalidade {modalidade}",
+      "url_requerimento": "/homologacao_defesa?tipo=5&etapa=Q",
+      "status": "A"
+    }
+  },
+  {
+    "model": "nucleo.tipoocorrencia",
+    "pk": 6,
+    "fields": {
+      "descricao": "Solicitação de Prorrogação de Defesa",
+      "detalhe": "Solicitação de Prorrogação de Defesa por 6 meses. A solicitação é enviada para a secretaria e entra na fila para que a CD aprove.",
+      "template": "Trata-se de solicitação de prorrogação de defesa da(o) discente {aluno.nome} ({matricula.numero}), orientada(o) por {orientador.nome} por 6 meses",
+      "url_requerimento": "/solicita-prorrogacao?tipo=6",
+      "status": "A"
+    }
+  },
+  {
+    "model": "nucleo.tipoocorrencia",
+    "pk": 7,
+    "fields": {
+      "descricao": "Solicitação de Prorrogação de Qualificação",
+      "detalhe": "Solicitação de Prorrogração por 6 meses. A solicitação é enviada para a secretaria e entra na fila para que a CD aprove.",
+      "template": "Trata-se de solicitação de prorrogação de qualificação da(o) discente {aluno.nome} ({matricula.numero}), orientada(o) por {orientador.nome} por 6 meses",
+      "url_requerimento": "/solicita-prorrogacao?tipo=7",
+      "status": "A"
+    }
+  },
+  {
+    "model": "nucleo.tipoocorrencia",
+    "pk": 8,
+    "fields": {
+      "descricao": "Solicitação de Trancamento",
+      "detalhe": "Solicitação de Trancamento de curso. A solicitação é enviada para a secretaria e entra na fila para que a CD aprove.",
+      "template": "Trata-se de solicitação de trancamento do curso pela(o) discente {aluno.nome} ({matricula.numero}), orientada(o) por {orientador.nome}",
+      "url_requerimento": "/solicita-trancamento",
+      "status": "A",
+      "cursos": []
+    }
+  },
+  {
+    "model": "nucleo.tipoocorrencia",
+    "pk": 9,
+    "fields": {
+      "descricao": "Solicitação de aproveitamento de créditos",
+      "detalhe": "",
+      "url_requerimento": "/solicita-aproveitamento",
+      "status": "I",
+      "cursos": []
+    }
+  }
+]

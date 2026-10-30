@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>Ata — {{ ata.descricao }}</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 2cm 1.5cm 2cm 1.5cm;
+      @bottom-center {
+        content: "Página " counter(page) " de " counter(pages);
+        font-size: 8pt;
+        color: #555;
+      }
+    }
+
+    body {
+      font-family: "DejaVu Sans", Arial, sans-serif;
+      font-size: 10pt;
+      color: #000;
+    }
+
+    .cabecalho {
+      text-align: center;
+      border-bottom: 1.5pt solid #000;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+    .cabecalho .titulo {
+      font-size: 14pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin: 0 0 4px 0;
+    }
+    .cabecalho .data {
+      font-size: 10pt;
+      color: #333;
+      margin: 0;
+    }
+
+    .lista-ocorrencias {
+      list-style: decimal;
+      padding-left: 1.6em;
+    }
+    .lista-ocorrencias li {
+      margin-bottom: 10px;
+      text-align: justify;
+      line-height: 1.35;
+    }
+
+    .vazio {
+      font-style: italic;
+      color: #555;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="cabecalho">
+    <p class="titulo">{{ ata.descricao }}</p>
+    {% if ata.dt %}
+      <p class="data">Data: {{ ata.dt|date:"d/m/Y" }}</p>
+    {% endif %}
+  </div>
+
+  {% if ocorrencias %}
+    <ol class="lista-ocorrencias">
+      {% for ocorrencia in ocorrencias %}
+        <li>{{ ocorrencia.descricao|default:"(sem descrição)" }}</li>
+      {% endfor %}
+    </ol>
+  {% else %}
+    <p class="vazio">Nenhuma ocorrência associada a esta ata.</p>
+  {% endif %}
+</body>
+</html>

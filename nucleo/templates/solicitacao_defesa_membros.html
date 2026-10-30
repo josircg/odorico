@@ -1,0 +1,62 @@
+{% extends 'base_header.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<section id="panel">
+  <div class="container py-4 py-xl-5">
+    <div class="mx-auto p-4" style="max-width: 60rem;">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="text-center mx-auto">Solicitação de Defesa</h1>
+        <button type="button" class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#criarMembroExternoModal">
+          <span class="me-2">+ Novo Membro</span>
+        </button>
+      </div>
+
+      <p class="text-muted text-center">
+        Aqui você preenche os membros que irão compor sua banca de avaliação. Caso não encontre algum pesquisador externo, utilize o botão de cadastrar um novo membro para registrar o pesquisador de sua escolha.
+      </p>
+
+      <form method="post">
+          {% csrf_token %}
+          <div class="container">
+              <h2 class="h5 mt-2 mb-3 border-bottom pb-2">Membros Titulares</h2>
+              <div class="row g-3">
+                  {% for form in forms_titulares %}
+                  <div class="col-md-6">
+                      <fieldset class="mb-3 p-3 rounded border bg-light">
+                          <div class="stacked-inline-form">
+                              {% crispy form %}
+                          </div>
+                      </fieldset>
+                  </div>
+                  {% endfor %}
+              </div>
+
+              {% if forms_suplentes %}
+              <h2 class="h5 mt-4 mb-3 border-bottom pb-2">Membros Suplentes</h2>
+              <p class="text-muted" style="font-size: 0.9em;">
+                  Os suplentes substituem um membro titular em caso de impedimento. Preencha apenas se aplicável.
+              </p>
+              <div class="row g-3">
+                  {% for form in forms_suplentes %}
+                  <div class="col-md-6">
+                      <fieldset class="mb-3 p-3 rounded border border-warning" style="background-color: #fff8e1;">
+                          <div class="stacked-inline-form">
+                              {% crispy form %}
+                          </div>
+                      </fieldset>
+                  </div>
+                  {% endfor %}
+              </div>
+              {% endif %}
+          </div>
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary mt-3 px-4">Finalizar Solicitação</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+{% include 'criar_membro_externo.html' with form=form_membro_externo %}
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends 'base_header.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<!-- CSS específico do módulo de editais -->
+<link rel="stylesheet" href="{% static 'editais/css/inscricao_edital.css' %}">
+
+<div class="container py-4 py-xl-5">
+    <div class="card mx-auto shadow-sm p-4" style="max-width: 40rem;">
+
+        <h2 class="text-center">{{ edital.descricao }}</h2>
+        <h3 class="text-center mb-3">Formulário de Inscrição</h3>
+
+        {% if readonly %}
+            <p class="text-center text-muted">Sua inscrição já foi submetida. Abaixo, você pode conferir os dados submetidos</p>
+            <p>Caso seja necessário alterar algum dado ou substituir um documento anexado, utilize o formulário de Solicitações Diversas, disponível em <a href="https://ppgci.ibict.br/secretaria/">https://ppgci.ibict.br/secretaria/</a>
+            <p>Nos campos que não se aplicarem à sua solicitação ou para os quais não houver informação a ser preenchida, informe “NA”.</p>
+        {% else %}
+            <p class="text-center text-muted">
+                Aqui você pode editar sua inscrição com base nas informações do edital.<br>
+                {% if edital.url %}
+                    Para ler o edital na íntegra,
+                    <a href="{{ edital.url }}" target="_blank">clique aqui</a>.
+                {% endif %}
+            </p>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+
+            <div class="inscricao-edital-form">
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <!-- Formulário principal da inscrição -->
+                {{ form|crispy }}
+
+                <!-- Formação Acadêmica
+                <h4>Formação Acadêmica</h4>
+                {{ formacao_form|crispy }} -->
+
+                <!-- Campo de nível de formação (se aplicável) -->
+                {% if documento_upload_form.fields.nivel_formacao %}
+                    <div class="form-group">
+                        {{ documento_upload_form.nivel_formacao|as_crispy_field }}
+                    </div>
+                {% endif %}
+
+                <!-- Documentos -->
+                {% if readonly %}
+                <h5>Documentos Anexados</h5>
+                {% else %}
+                <h4>Documentos Obrigatórios</h4>
+
+                <ul class="list-unstyled">
+                    {% for field in documento_upload_form %}
+                        {% if field.name != "nivel_formacao" %}
+                            <li class="documento-item">
+                                {{ field|as_crispy_field }}
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+
+                <!-- Documentos já enviados -->
+                <h5>Documentos Anexados Anteriormente</h5>
+                {% endif %}
+
+                <ul class="list-unstyled documentos-anexados">
+                    {% for doc in documentos_existentes %}
+                        <li>
+                            <strong>{{ doc.tipo.descricao }}</strong>
+                            – {{ doc.anexo.name|cut:"anexos/" }}
+                        </li>
+                    {% empty %}
+                        <li class="text-muted">
+                            Nenhum documento enviado ainda.
+                        </li>
+                    {% endfor %}
+                </ul>
+
+                <!-- Botões -->
+                <div class="text-center mt-5">
+                    {% if not readonly %}
+                        <button type="submit" class="btn btn-primary">
+                            Salvar Alterações
+                        </button>
+                    {% else %}
+                        <a href="{% url 'home' %}" class="btn btn-secondary">
+                            Voltar para a Página Inicial
+                        </a>
+                    {% endif %}
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

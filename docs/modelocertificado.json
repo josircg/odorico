@@ -1,0 +1,1 @@
+[{"model": "escola.modelocertificado", "pk": 1, "fields": {"descricao": "Modelo Padrão", "font_name": "DejaVuSans.ttf", "font_size": 32, "color": "rgb(0,0,0)", "linha": 440, "status": "A"}}]

@@ -1,3 +1,8 @@
+#
+# Rotina de importação do Diamond Journals - Josir - 22/04/2023
+# O arquivo pode sempre ser recuperado a partir da URL https://www.scopus.com/sources ou
+#
+
 import datetime
 import os
 import time
@@ -73,9 +78,12 @@ class Command(BaseCommand):
             if not periodico:
                 periodico = Periodico.objects.filter(eissn=issn_busca).first()
                 if not periodico:
-                    issn_record = get_issn(issn_busca, extended=True)
-                    if type(issn_record) == tuple:
-                        issn, eissn, title, country, url = issn_record
+                    issn_record = get_issn(issn_busca)
+                    if type(issn_record) == dict:
+                        issn = issn_record['issn']
+                        title = issn_record['names_list']
+                        country = issn_record['country']
+                        url = issn_record['url']
                         if issn_busca != issn:
                             periodico = Periodico.objects.filter(issn=issn).first()
 
@@ -87,6 +95,7 @@ class Command(BaseCommand):
                             periodico = Periodico(issn=issn, nome=title[0])
                             inclusao = True
 
+                        eissn = issn_record['eissn_list']
                         if len(eissn) > 0 and eissn[0] != '':
                             periodico.eissn = eissn[0]
 
